@@ -120,7 +120,7 @@ Repository:
 
 # 6. M01 — Technical Foundation
 
-**Status:** NOT_STARTED
+**Status:** DONE
 
 ## Objective
 
@@ -149,7 +149,7 @@ Requirements:
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -166,7 +166,7 @@ Do not create final visual design yet.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -181,7 +181,7 @@ Configure:
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -197,7 +197,7 @@ No scientific endpoints yet.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -217,7 +217,7 @@ Only install dependencies required for foundation.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -233,7 +233,7 @@ No credentials.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -245,7 +245,7 @@ Avoid permissive production assumptions.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -259,7 +259,7 @@ Required tests:
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -275,7 +275,7 @@ Update:
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -296,7 +296,7 @@ chore: initialize FieldShift AI application foundation
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
