@@ -321,7 +321,7 @@ no secrets exist
 
 # 7. M02 — Core Domain Models
 
-**Status:** NOT_STARTED
+**Status:** DONE
 
 ## Objective
 
@@ -342,7 +342,7 @@ Validate coordinate ranges.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -365,7 +365,7 @@ Fields should support:
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -375,7 +375,7 @@ Implement normalized environmental observation schema.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -388,7 +388,7 @@ Support:
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -398,7 +398,7 @@ All scientific fields optional until approved method requires them.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -417,7 +417,7 @@ No actual crop values yet.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -429,7 +429,7 @@ No default scientific weights.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -439,7 +439,7 @@ Implement sequence model.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -449,7 +449,7 @@ Implement result structure without invented scoring.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -465,7 +465,7 @@ Test:
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
