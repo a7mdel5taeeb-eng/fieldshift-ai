@@ -1,0 +1,1 @@
+{"properties":{"parameter":{"T2M":{"20250101":12.2},"T2M_MIN":{"20250101":7.1},"T2M_MAX":{"20250101":19.0},"PRECTOTCORR":{"20250101":0.0},"RH2M":{"20250101":32.1}}},"header":{"api":{"version":"v2.10.0"},"fill_value":-999.0},"parameters":{"T2M":{"units":"C"},"T2M_MIN":{"units":"C"},"T2M_MAX":{"units":"C"},"PRECTOTCORR":{"units":"mm/day"},"RH2M":{"units":"%"}}}

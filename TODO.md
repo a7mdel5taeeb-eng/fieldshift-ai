@@ -480,7 +480,7 @@ No scientific scoring.
 
 # 8. M03 — NASA POWER Integration
 
-**Status:** NOT_STARTED
+**Status:** DONE
 
 ## Objective
 
@@ -516,7 +516,7 @@ Update `DATA_SOURCES.md` only if corrections are required.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -540,7 +540,7 @@ Responsibilities:
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -552,7 +552,7 @@ Do not commit large NASA datasets.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -569,7 +569,7 @@ Test:
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -587,7 +587,7 @@ No crop recommendations.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -605,7 +605,7 @@ Display:
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
