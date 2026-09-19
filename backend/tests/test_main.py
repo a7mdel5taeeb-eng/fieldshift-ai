@@ -28,3 +28,11 @@ def test_soil_moisture_context_fails_without_credentials() -> None:
 
     assert response.status_code == 200
     assert response.json()["errors"] == ["SMAP_AUTH_CONFIG_REQUIRED"]
+
+
+def test_suitability_endpoint_returns_qualitative_factors() -> None:
+    response = client.post("/api/v1/suitability/evaluate", json={"crop_id": "wheat", "soil": {"pH": 6.5}})
+
+    assert response.status_code == 200
+    assert response.json()["overall_assessment"] == "no_documented_limitation"
+    assert "score" not in response.json()

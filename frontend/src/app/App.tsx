@@ -20,6 +20,13 @@ export function App() {
           <p className="mt-2 text-sm text-amber-200">Quality notice: 2026-05-14 to 2026-07-28 has a reported geolocation issue; Standard products are being reprocessed.</p>
           <p className="mt-2 text-sm text-slate-400">Loading and unavailable states are supported by the soil-moisture endpoint. Status: unavailable until NASA Earthdata access and an authorized SMAP granule are configured locally.</p>
         </section>
+        <section className="mt-10 border-t border-slate-700 pt-6" aria-labelledby="suitability-heading">
+          <h2 id="suitability-heading" className="text-2xl font-semibold">Transparent crop suitability</h2>
+          <label className="mt-3 block text-sm" htmlFor="crop">Supported crop</label>
+          <select id="crop" className="mt-1 rounded p-3 text-slate-900" defaultValue="wheat"><option value="wheat">Wheat</option><option value="barley">Barley</option><option value="chickpea">Chickpea</option><option value="alfalfa">Alfalfa</option></select>
+          <p className="mt-3 text-sm text-slate-300">Factor labels: SUITABLE, MARGINAL, LIMITING, or UNKNOWN. Temperature and precipitation remain UNKNOWN until a crop-specific growing period is documented.</p>
+          <p className="mt-2 text-sm text-slate-400">No numerical score, crop recommendation, or rotation decision is shown.</p>
+        </section>
       </section>
     </main>
   );

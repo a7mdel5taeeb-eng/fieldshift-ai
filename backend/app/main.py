@@ -8,6 +8,7 @@ from app.adapters.power import PowerAdapter, PowerAdapterError
 from app.adapters.smap import SmapAdapter, SmapAdapterError, quality_warnings
 from app.repositories.crops import CropNotFoundError, CropRepository
 from app.schemas.domain import ClimateObservation, CropProfile, SoilMoistureObservation, SoilProfile
+from app.services.suitability import CropSuitabilityResult, evaluate
 
 
 class HealthResponse(BaseModel):
@@ -70,6 +71,11 @@ class SoilMoistureResponse(BaseModel):
     limitations: list[str]
     errors: list[str]
 
+
+class SuitabilityRequest(BaseModel):
+    crop_id: str
+    soil: SoilProfile
+
 @app.post("/api/v1/environment/context", response_model=EnvironmentResponse)
 def environment_context(request: EnvironmentRequest) -> EnvironmentResponse:
     try:
@@ -87,6 +93,14 @@ def soil_moisture_context(request: EnvironmentRequest) -> SoilMoistureResponse:
         return SoilMoistureResponse(data=data, provenance=["NASA SMAP SPL4SMGP Version 8"], warnings=warnings, limitations=["9 km model/data-assimilation estimate; not a field measurement"], errors=[])
     except SmapAdapterError as error:
         return SoilMoistureResponse(data=[], provenance=["NASA SMAP SPL4SMGP Version 8"], warnings=warnings, limitations=["9 km model/data-assimilation estimate; not a field measurement"], errors=[str(error)])
+
+
+@app.post("/api/v1/suitability/evaluate", response_model=CropSuitabilityResult)
+def suitability_evaluate(request: SuitabilityRequest) -> CropSuitabilityResult:
+    try:
+        return evaluate(crop_repository.get(request.crop_id), request.soil)
+    except CropNotFoundError as error:
+        raise HTTPException(404, "CROP_NOT_SUPPORTED") from error
 
 @app.get("/api/v1/crops", response_model=list[CropProfile])
 def list_crops() -> list[CropProfile]: return crop_repository.list()

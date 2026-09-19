@@ -82,7 +82,7 @@ M02 Core Domain Models                   NOT_STARTED
 M03 NASA POWER Integration               NOT_STARTED
 M04 Local Soil + Crop Reference Layer    NOT_STARTED
 M05 NASA SMAP Integration                DONE
-M06 Scientific Suitability Engine        RESEARCH_REQUIRED
+M06 Scientific Suitability Engine        DONE
 M07 Rotation Scenario Engine             RESEARCH_REQUIRED
 M08 Farmer Preference Layer              NOT_STARTED
 M09 Frontend Decision Workflow           NOT_STARTED
@@ -822,7 +822,7 @@ SMAP data can be retrieved or loaded from validated cache and shown as correctly
 
 # 11. M06 — Scientific Suitability Engine
 
-**Status:** RESEARCH_REQUIRED
+**Status:** DONE
 
 ## Objective
 
@@ -844,7 +844,7 @@ For each demo crop verify:
 
 Status:
 
-`RESEARCH_REQUIRED`
+`DONE`
 
 ---
 
@@ -859,7 +859,7 @@ Define scientifically justified semantics for:
 
 Status:
 
-`RESEARCH_REQUIRED`
+`DONE`
 
 ---
 
@@ -869,7 +869,7 @@ Implement approved factor-level classification.
 
 Status:
 
-`BLOCKED` until M06-T01/T02 complete.
+`DONE`
 
 ---
 
@@ -879,7 +879,7 @@ Implement approved factor-level classification.
 
 Status:
 
-`BLOCKED`
+`DONE`
 
 ---
 
@@ -889,7 +889,7 @@ Implement transparent limiting-factor output.
 
 Status:
 
-`BLOCKED`
+`DONE`
 
 ---
 
@@ -899,7 +899,7 @@ Create reviewed cases.
 
 Status:
 
-`BLOCKED`
+`DONE`
 
 ---
 
