@@ -1,48 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+const api = "http://127.0.0.1:8000/api/v1";
+const steps = ["Location", "Soil", "Crops", "Priorities", "NASA", "Suitability", "Rotation", "Review"];
+type Crop = { id: string; common_name: string; family?: string };
+
 export function App() {
-  const [loading, setLoading] = useState(false); const [error, setError] = useState("");
-  const [priorities, setPriorities] = useState({ water_conservation: 0, soil_health: 0, resilience: 0, productivity: 0 });
-  const total = Object.values(priorities).reduce((sum, value) => sum + value, 0);
-  return (
-    <main className="min-h-screen bg-slate-950 px-6 py-16 text-slate-100 sm:px-10">
-      <section className="mx-auto max-w-3xl">
-        <p className="text-sm font-semibold tracking-[0.18em] text-cyan-300 uppercase">
-          2026 NASA Space Apps Challenge
-        </p>
-        <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">FieldShift AI</h1>
-        <p className="mt-6 text-lg text-slate-300">NASA POWER environmental context.</p>
-        <div className="mt-8 grid gap-3 sm:grid-cols-2"><input aria-label="Latitude" defaultValue="24.7" className="rounded p-3 text-slate-900"/><input aria-label="Longitude" defaultValue="47.3" className="rounded p-3 text-slate-900"/><input aria-label="Start date" type="date" defaultValue="2025-01-01" className="rounded p-3 text-slate-900"/><input aria-label="End date" type="date" defaultValue="2025-01-03" className="rounded p-3 text-slate-900"/></div>
-        <button onClick={() => { setLoading(true); setError(""); setTimeout(() => { setLoading(false); setError("Connect the local backend to load data."); }, 100); }} className="mt-4 rounded bg-cyan-300 px-4 py-2 font-semibold text-slate-950">Load NASA Data</button>
-        {loading && <p className="mt-3">Loading NASA POWER data…</p>}{error && <p role="alert" className="mt-3">{error}</p>}
-        <p className="mt-6 text-sm text-slate-400">Source: NASA POWER. Values are source-native resolution, not field measurements.</p>
-        <section className="mt-10 border-t border-slate-700 pt-6" aria-labelledby="smap-heading">
-          <h2 id="smap-heading" className="text-2xl font-semibold">NASA SMAP soil-moisture context</h2>
-          <p className="mt-3 text-slate-300">Surface (0–5 cm) and root-zone (0–100 cm) moisture are available as volumetric values when an authorized source granule is configured.</p>
-          <p className="mt-3 text-sm text-slate-400">Source: NASA SMAP SPL4SMGP Version 8 · 3-hourly · 9 km EASE-Grid 2.0 · not a field sensor measurement.</p>
-          <p className="mt-2 text-sm text-amber-200">Quality notice: 2026-05-14 to 2026-07-28 has a reported geolocation issue; Standard products are being reprocessed.</p>
-          <p className="mt-2 text-sm text-slate-400">Loading and unavailable states are supported by the soil-moisture endpoint. Status: unavailable until NASA Earthdata access and an authorized SMAP granule are configured locally.</p>
-        </section>
-        <section className="mt-10 border-t border-slate-700 pt-6" aria-labelledby="suitability-heading">
-          <h2 id="suitability-heading" className="text-2xl font-semibold">Transparent crop suitability</h2>
-          <label className="mt-3 block text-sm" htmlFor="crop">Supported crop</label>
-          <select id="crop" className="mt-1 rounded p-3 text-slate-900" defaultValue="wheat"><option value="wheat">Wheat</option><option value="barley">Barley</option><option value="chickpea">Chickpea</option><option value="alfalfa">Alfalfa</option></select>
-          <p className="mt-3 text-sm text-slate-300">Factor labels: SUITABLE, MARGINAL, LIMITING, or UNKNOWN. Temperature and precipitation remain UNKNOWN until a crop-specific growing period is documented.</p>
-          <p className="mt-2 text-sm text-slate-400">No numerical score, crop recommendation, or rotation decision is shown.</p>
-        </section>
-        <section className="mt-10 border-t border-slate-700 pt-6" aria-labelledby="rotation-heading">
-          <h2 id="rotation-heading" className="text-2xl font-semibold">Rotation scenarios</h2>
-          <p className="mt-3 text-sm text-slate-300">Choose supported crops and a generic planning horizon to inspect unranked sequences. The MVP horizon is three periods; no calendar months are assumed.</p>
-          <p className="mt-2 text-sm text-slate-400">Each scenario exposes crop families, distinct-crop/family descriptors, sourced repeated-crop or repeated-family warnings, legume presence, limitations, and evidence. No scenario is labelled best.</p>
-        </section>
-        <section className="mt-10 border-t border-slate-700 pt-6" aria-labelledby="priorities-heading">
-          <h2 id="priorities-heading" className="text-2xl font-semibold">Farmer priorities</h2>
-          <p className="mt-3 text-sm text-cyan-200">These priorities describe what matters most to you. They do not change the underlying scientific assessment.</p>
-          <p className="mt-2 text-sm text-slate-400">USER PREFERENCES — not scientific weights. Scenario ordering is unavailable until source-backed mappings are approved.</p>
-          {Object.entries(priorities).map(([key, value]) => <label className="mt-3 block text-sm" key={key}>{key.replace("_", " ")}: {value}<input aria-label={key} className="ml-3 align-middle" type="range" min="0" max="10" value={value} onChange={(event) => setPriorities({ ...priorities, [key]: Number(event.target.value) })} /></label>)}
-          <p className="mt-3 text-sm text-slate-300">Normalized values: {Object.entries(priorities).map(([key, value]) => `${key} ${total ? (value / total).toFixed(2) : "0.00"}`).join(" · ")}</p>
-          <p className="mt-2 text-sm text-amber-200">PREFERENCE_EVIDENCE_UNAVAILABLE for water conservation, soil health, resilience, and productivity.</p>
-        </section>
-      </section>
-    </main>
-  );
+  const [step, setStep] = useState(0); const [crops, setCrops] = useState<Crop[]>([]); const [country, setCountry] = useState(""); const [lat, setLat] = useState("24.7"); const [lon, setLon] = useState("47.3"); const [selected, setSelected] = useState<string[]>([]); const [error, setError] = useState(""); const [result, setResult] = useState("Not loaded.");
+  const [soil, setSoil] = useState({ source_type: "unknown", texture: "", pH: "", drainage: "" }); const [priorities, setPriorities] = useState({ water_conservation: 0, soil_health: 0, resilience: 0, productivity: 0 }); const total = Object.values(priorities).reduce((a, b) => a + b, 0);
+  useEffect(() => { fetch(`${api}/crops`).then((r) => r.json()).then(setCrops).catch(() => setError("Crop library unavailable.")); }, []);
+  const request = async (path: string, body: unknown) => { try { const data = await fetch(`${api}${path}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }).then((r) => r.json()); setResult(JSON.stringify(data, null, 2)); } catch { setError("Data unavailable."); } };
+  return <main className="min-h-screen bg-slate-950 px-4 py-8 text-slate-100"><section className="mx-auto max-w-4xl"><p className="text-sm text-cyan-300">2026 NASA Space Apps Challenge</p><h1 className="text-4xl font-bold">FieldShift AI</h1><p>Evidence-led crop and rotation exploration.</p><ol className="mt-4 flex flex-wrap gap-2" aria-label="Workflow steps">{steps.map((name, i) => <li key={name} aria-current={i === step ? "step" : undefined} className={i === step ? "rounded bg-cyan-300 px-2 text-slate-950" : "rounded bg-slate-800 px-2"}>{i + 1}. {name}</li>)}</ol>{error && <p role="alert">{error}</p>}<section className="mt-6 rounded border border-slate-700 p-4">
+  {step === 0 && <><h2>Country and location</h2><label>Country <input aria-label="Country" value={country} onChange={(e) => setCountry(e.target.value)} className="text-slate-900" /></label><label> Latitude <input aria-label="Latitude" value={lat} onChange={(e) => setLat(e.target.value)} className="text-slate-900" /></label><label> Longitude <input aria-label="Longitude" value={lon} onChange={(e) => setLon(e.target.value)} className="text-slate-900" /></label><p>Country is context; scientific requests use coordinates.</p></>}
+  {step === 1 && <><h2>Farm / soil context</h2><select aria-label="Soil source type" value={soil.source_type} onChange={(e) => setSoil({ ...soil, source_type: e.target.value })} className="text-slate-900">{["laboratory_measurement", "farmer_provided", "local_record", "modeled_estimate", "unknown"].map((x) => <option key={x}>{x}</option>)}</select>{["texture", "pH", "drainage"].map((key) => <label key={key}> {key}<input aria-label={key} value={soil[key as keyof typeof soil]} onChange={(e) => setSoil({ ...soil, [key]: e.target.value })} className="text-slate-900" /></label>)}<p>Missing fields remain unknown.</p></>}
+  {step === 2 && <><h2>Supported crops</h2><p>MVP-supported, extensible crop library.</p>{crops.map((crop) => <label key={crop.id} className="block"><input type="checkbox" checked={selected.includes(crop.id)} onChange={() => setSelected(selected.includes(crop.id) ? selected.filter((x) => x !== crop.id) : [...selected, crop.id])} /> {crop.common_name} ({crop.family})</label>)}</>}
+  {step === 3 && <><h2>Farmer priorities</h2><p>These priorities describe what matters most to you. They do not change the underlying scientific assessment.</p>{Object.entries(priorities).map(([key, value]) => <label key={key} className="block">{key}: {value}<input aria-label={key} type="range" min="0" max="10" value={value} onChange={(e) => setPriorities({ ...priorities, [key]: Number(e.target.value) })} /></label>)}<p>Normalized user preferences: {total ? "shown from your values" : "0.00"}. PREFERENCE_EVIDENCE_UNAVAILABLE; scenarios are not ranked.</p></>}
+  {step === 4 && <><h2>NASA environmental context</h2><button onClick={() => request("/environment/context", { latitude: Number(lat), longitude: Number(lon), start_date: "2025-01-01", end_date: "2025-01-03" })}>Load NASA POWER temperature, precipitation, humidity</button><button onClick={() => request("/soil-moisture/context", { latitude: Number(lat), longitude: Number(lon), start_date: "2025-01-01", end_date: "2025-01-03" })}>Load NASA SMAP context</button><pre>{result}</pre></>}
+  {step === 5 && <><h2>Suitability</h2><button onClick={() => selected[0] ? request("/suitability/evaluate", { crop_id: selected[0], soil: { ...soil, pH: soil.pH ? Number(soil.pH) : null } }) : setError("Select a supported crop.")}>Evaluate crop</button><pre>{result}</pre></>}
+  {step === 6 && <><h2>Rotation scenarios</h2><button onClick={() => selected.length ? request("/scenarios/generate", { candidate_crop_ids: selected, planning_horizon: 3 }) : setError("Select crops first.")}>Generate 3-period scenarios</button><p>No generated scenarios are labelled best. Evidence and limitations remain available in every scenario.</p><pre>{result}</pre></>}
+  {step === 7 && <><h2>Review</h2><p>{country || "Country not provided"}; {lat}, {lon}; crops: {selected.join(", ") || "none"}; soil source: {soil.source_type}.</p><p>NASA context, suitability, rotation scenarios, priorities, warnings, and limitations are retained in this workflow.</p></>}
+  </section><nav className="mt-4 flex justify-between"><button disabled={!step} onClick={() => setStep(step - 1)}>Back</button><button disabled={step === steps.length - 1} onClick={() => setStep(step + 1)}>Next</button></nav></section></main>;
 }

@@ -85,7 +85,7 @@ M05 NASA SMAP Integration                DONE
 M06 Scientific Suitability Engine        DONE
 M07 Rotation Scenario Engine             DONE
 M08 Farmer Preference Layer              IN_PROGRESS
-M09 Frontend Decision Workflow           NOT_STARTED
+M09 Frontend Decision Workflow           DONE
 M10 Evidence & Explainability             NOT_STARTED
 M11 Demo Snapshot & Reliability           NOT_STARTED
 M12 Validation & Golden Cases             NOT_STARTED
@@ -1056,7 +1056,7 @@ Preference-based ordering remains `RESEARCH_REQUIRED` until source-backed mappin
 
 # 14. M09 — Frontend Decision Workflow
 
-**Status:** NOT_STARTED
+**Status:** DONE
 
 ## Objective
 
@@ -1068,55 +1068,55 @@ Create the complete farmer/judge journey.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ### M09-T02 — Farm Context Step
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ### M09-T03 — Soil Step
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ### M09-T04 — Crop Selection Step
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ### M09-T05 — Farmer Priorities Step
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ### M09-T06 — NASA Environment Step
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ### M09-T07 — Scenario Results Step
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ### M09-T08 — Comparison Step
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ### M09-T09 — Responsive / Accessibility Pass
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
