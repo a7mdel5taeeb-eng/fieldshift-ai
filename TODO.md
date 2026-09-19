@@ -1124,6 +1124,10 @@ Status:
 
 A judge can complete the core workflow in approximately 1–2 minutes.
 
+### M09 post-completion UX refinement
+
+The completed frontend workflow is presented as a farmer-facing four-step journey — Location, Farm & Crop, Analysis, and Results — while retaining the approved technical stages, provenance, and evidence details behind the simple view. This refinement does not change M08 preference evidence status or scientific methodology.
+
 ---
 
 # 15. M10 — Evidence & Explainability
