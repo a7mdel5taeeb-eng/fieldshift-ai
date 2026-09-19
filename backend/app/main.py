@@ -21,7 +21,8 @@ from app.schemas.domain import (
     SoilProfile,
 )
 from app.services import demo_snapshot
-from app.services.preferences import PreferenceCaptureResult, capture
+from app.services.preferences import PreferenceCaptureResult, PreferenceComparison, capture
+from app.services.preferences import compare as compare_preferences
 from app.services.rotation import RotationAssessment
 from app.services.rotation import evaluate as evaluate_rotation
 from app.services.rotation import generate as generate_scenarios
@@ -110,6 +111,11 @@ class ScenarioEvaluateRequest(BaseModel):
 class PreferenceCaptureRequest(BaseModel):
     priorities: FarmerPriorities
 
+
+class PreferenceCompareRequest(BaseModel):
+    scenarios: list[RotationScenario]
+    priorities: FarmerPriorities
+
 @app.post("/api/v1/environment/context", response_model=EnvironmentResponse)
 def environment_context(request: EnvironmentRequest) -> EnvironmentResponse:
     try:
@@ -161,6 +167,17 @@ def scenario_evaluate(request: ScenarioEvaluateRequest) -> RotationAssessment:
 @app.post("/api/v1/preferences/capture", response_model=PreferenceCaptureResult)
 def preference_capture(request: PreferenceCaptureRequest) -> PreferenceCaptureResult:
     return capture(request.priorities)
+
+
+@app.post("/api/v1/preferences/compare", response_model=list[PreferenceComparison])
+def preference_compare(request: PreferenceCompareRequest) -> list[PreferenceComparison]:
+    try:
+        return [
+            compare_preferences(evaluate_rotation(scenario, crop_repository.list()), request.priorities)
+            for scenario in request.scenarios
+        ]
+    except ValueError as error:
+        raise HTTPException(400, str(error)) from error
 
 @app.get("/api/v1/crops", response_model=list[CropProfile])
 def list_crops() -> list[CropProfile]: return crop_repository.list()

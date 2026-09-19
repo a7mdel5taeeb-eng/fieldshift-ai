@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { App } from "./App";
 import { EvidencePanel } from "./evidence";
+import { PreferenceAlignmentSummary } from "./preference-alignment";
 import i18n from "../i18n";
 
 const sourceStatus = (text: string) => screen.getByText((_, element) => Boolean(element?.classList.contains("source-status") && element.textContent?.includes(text)));
@@ -95,5 +96,46 @@ describe("App", () => {
 
     expect(sourceStatus("NASA POWER: Live NASA data")).toBeInTheDocument();
     expect(sourceStatus("SMAP: Demo snapshot")).toBeInTheDocument();
+  });
+
+  it("presents qualitative preference evidence without a winner or score", () => {
+    render(<PreferenceAlignmentSummary priorities={{ water_conservation: 4, soil_health: 3, resilience: 2, productivity: 1 }} comparisons={[{
+      scenario_id: "scenario-1",
+      foregrounded_dimensions: ["soil_health", "resilience"],
+      unavailable_preference_dimensions: { water_conservation: "PREFERENCE_EVIDENCE_UNAVAILABLE", productivity: "PREFERENCE_EVIDENCE_UNAVAILABLE" },
+    }]} />);
+
+    expect(screen.getByText("More aligned with your stated priorities")).toBeInTheDocument();
+    expect(screen.getByText(/Soil Health: qualitative rotation evidence is shown/)).toBeInTheDocument();
+    expect(screen.getByText(/Resilience: qualitative rotation-diversity evidence is shown/)).toBeInTheDocument();
+    expect(screen.getByText(/Water Conservation: PREFERENCE_EVIDENCE_UNAVAILABLE/)).toBeInTheDocument();
+    expect(screen.getByText(/Productivity: PREFERENCE_EVIDENCE_UNAVAILABLE/)).toBeInTheDocument();
+    expect(screen.queryByText(/best|winner|optimal/i)).not.toBeInTheDocument();
+  });
+
+  it("changes the foregrounded presentation when a user changes priorities", () => {
+    const base = { water_conservation: 0, soil_health: 0, resilience: 0, productivity: 0 };
+    const { rerender } = render(<PreferenceAlignmentSummary priorities={{ ...base, soil_health: 5 }} comparisons={[{
+      scenario_id: "scenario-1", foregrounded_dimensions: ["soil_health"], unavailable_preference_dimensions: {},
+    }]} />);
+
+    expect(screen.getByText(/Soil Health: qualitative rotation evidence is shown/)).toBeInTheDocument();
+    rerender(<PreferenceAlignmentSummary priorities={{ ...base, resilience: 5 }} comparisons={[{
+      scenario_id: "scenario-1", foregrounded_dimensions: ["resilience"], unavailable_preference_dimensions: {},
+    }]} />);
+    expect(screen.getByText(/Resilience: qualitative rotation-diversity evidence is shown/)).toBeInTheDocument();
+  });
+
+  it("translates qualitative preference presentation into Arabic", async () => {
+    await i18n.changeLanguage("ar");
+    render(<PreferenceAlignmentSummary priorities={{ water_conservation: 1, soil_health: 1, resilience: 1, productivity: 1 }} comparisons={[{
+      scenario_id: "scenario-1",
+      foregrounded_dimensions: ["soil_health", "resilience"],
+      unavailable_preference_dimensions: { water_conservation: "PREFERENCE_EVIDENCE_UNAVAILABLE", productivity: "PREFERENCE_EVIDENCE_UNAVAILABLE" },
+    }]} />);
+
+    expect(screen.getByText("أكثر اتساقًا مع أولوياتك المعلنة")).toBeInTheDocument();
+    expect(screen.getByText(/صحة التربة: تظهر أدلة تناوب نوعية/)).toBeInTheDocument();
+    expect(screen.getByText(/ترشيد استهلاك المياه: PREFERENCE_EVIDENCE_UNAVAILABLE/)).toBeInTheDocument();
   });
 });

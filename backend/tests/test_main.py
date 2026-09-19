@@ -56,3 +56,18 @@ def test_scenario_endpoints() -> None:
 def test_preference_capture_endpoint() -> None:
     response = client.post("/api/v1/preferences/capture", json={"priorities": {"water_conservation": 3, "soil_health": 1}})
     assert response.status_code == 200 and response.json()["normalized_priorities"]["water_conservation"] == 0.75
+
+
+def test_preference_comparison_endpoint_returns_qualitative_evidence_only() -> None:
+    response = client.post("/api/v1/preferences/compare", json={
+        "scenarios": [{"id": "scenario", "crop_ids": ["wheat", "chickpea"]}],
+        "priorities": {"soil_health": 3, "resilience": 1, "water_conservation": 2, "productivity": 4},
+    })
+
+    assert response.status_code == 200
+    result = response.json()[0]
+    assert result["scenario_id"] == "scenario"
+    assert result["foregrounded_dimensions"] == ["soil_health", "resilience"]
+    assert result["unavailable_preference_dimensions"]["water_conservation"] == "PREFERENCE_EVIDENCE_UNAVAILABLE"
+    assert result["unavailable_preference_dimensions"]["productivity"] == "PREFERENCE_EVIDENCE_UNAVAILABLE"
+    assert "score" not in result and "best" not in str(result).lower()

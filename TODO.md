@@ -1030,7 +1030,7 @@ Status:
 
 Status:
 
-`IN_PROGRESS` — capture API complete; preference-based ordering remains blocked
+`DONE` — evidence-aligned qualitative comparison complete; preference-based ordering remains blocked
 
 ---
 
@@ -1050,7 +1050,7 @@ Changing user priorities changes only the preference layer, not the underlying s
 
 ### M08 research dependency: evidence-safe scenario ordering
 
-Preference-based ordering remains `RESEARCH_REQUIRED` until source-backed mappings exist. Water conservation requires an approved water-demand methodology; soil health requires sourced soil-health/rotation indicators; resilience requires defined evidence-based resilience dimensions; productivity requires an approved productivity/yield methodology. Until then every dimension returns `PREFERENCE_EVIDENCE_UNAVAILABLE` and no scenario is reordered.
+Preference-based ordering remains `RESEARCH_REQUIRED` until source-backed mappings exist. Water conservation requires an approved water-demand methodology; soil health requires sourced soil-health/rotation indicators; resilience requires defined evidence-based resilience dimensions; productivity requires an approved productivity/yield methodology. Water conservation and productivity return `PREFERENCE_EVIDENCE_UNAVAILABLE`; soil health and resilience may foreground only approved qualitative rotation descriptors. No scenario is reordered.
 
 ---
 

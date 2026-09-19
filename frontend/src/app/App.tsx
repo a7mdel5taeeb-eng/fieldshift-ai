@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import countries from "i18n-iso-countries";
 import arCountries from "i18n-iso-countries/langs/ar.json";
 import enCountries from "i18n-iso-countries/langs/en.json";
 import { EvidencePanel } from "./evidence";
 import { normalizeSourceStatus } from "./source-status";
+import { PreferenceAlignmentSummary } from "./preference-alignment";
 import { reverseGeocode, searchPlaces, type Place } from "../location/geocoding";
 
 const api = "http://127.0.0.1:8000/api/v1";
@@ -44,6 +45,7 @@ export function App() {
   const [moisture, setMoisture] = useState<ApiResult | null>(null);
   const [suitability, setSuitability] = useState<ApiResult | null>(null);
   const [scenarios, setScenarios] = useState<ApiResult | null>(null);
+  const [preferenceComparisons, setPreferenceComparisons] = useState<Array<Record<string, unknown>>>([]);
   const [analysisWarnings, setAnalysisWarnings] = useState<string[]>([]);
   const [soil, setSoil] = useState({ source_type: "unknown", texture: "", pH: "", drainage: "" });
   const [priorities, setPriorities] = useState({ water_conservation: 0, soil_health: 0, resilience: 0, productivity: 0 });
@@ -63,10 +65,10 @@ export function App() {
     await i18n.changeLanguage(language);
     window.localStorage.setItem("fieldshift-language", language);
   };
-  const post = async (path: string, body: unknown): Promise<ApiResult> => {
+  const post = async <T = ApiResult>(path: string, body: unknown): Promise<T> => {
     const response = await fetch(`${api}${path}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     if (!response.ok) throw new Error(`${response.status}`);
-    return response.json() as Promise<ApiResult>;
+    return response.json() as Promise<T>;
   };
   const runAnalysis = async () => {
     if (!selected[0]) { setError(t("errors.chooseCrop")); setStep(1); return; }
@@ -83,7 +85,13 @@ export function App() {
       if (power.status === "fulfilled") { setEnvironment(power.value); if (Array.isArray(power.value.errors) && power.value.errors.length) warnings.push(t("errors.powerUnavailable")); } else warnings.push(t("errors.powerUnavailable"));
       if (smap.status === "fulfilled") { setMoisture(smap.value); if (Array.isArray(smap.value.errors) && smap.value.errors.length) warnings.push(t("errors.smapUnavailable")); } else warnings.push(t("errors.smapUnavailable"));
       if (nextSuitability.status === "fulfilled") setSuitability(nextSuitability.value); else warnings.push(t("errors.suitabilityUnavailable"));
-      if (nextScenarios.status === "fulfilled") setScenarios(nextScenarios.value); else warnings.push(t("errors.rotationUnavailable"));
+      if (nextScenarios.status === "fulfilled") {
+        try {
+          const comparisons = await post<Array<Record<string, unknown>>>("/preferences/compare", { scenarios: nextScenarios.value, priorities });
+          setPreferenceComparisons(comparisons);
+          setScenarios({ generated_scenarios: nextScenarios.value, preference_comparisons: comparisons });
+        } catch { warnings.push(t("evidence.preference")); setScenarios(nextScenarios.value); }
+      } else warnings.push(t("errors.rotationUnavailable"));
       setAnalysisWarnings(warnings); setError(results.every((result) => result.status === "rejected") ? t("errors.analysis") : ""); setStep(3);
     } catch { setError(t("errors.analysis")); } finally { setIsAnalyzing(false); }
   };
@@ -111,11 +119,12 @@ export function App() {
     { source_name: "NASA NSIDC DAAC", dataset_or_reference: "SMAP SPL4SMGP Version 8", spatial_resolution: "9 km", temporal_resolution: "3-hourly", url: "https://nsidc.org/data/spl4smgp/versions/8", source_status: normalizeSourceStatus(moisture?.source_status), quality_notes: [t("evidence.smapQuality")] },
   ];
   const cropExplanation = cropStatus === "SUITABLE" ? t("results.explanations.suitable") : cropStatus === "LIMITING" ? t("results.explanations.limiting") : t("results.explanations.unknown");
-  const fieldCards: [string, Status, string][] = [
+  const fieldCards: [string, Status, ReactNode][] = [
     [t("results.weather"), hasData(environment) ? "AVAILABLE" : "UNKNOWN", `${t("results.weatherDescription")} ${sourceStatusText(environment)}`],
     [t("results.soil"), soil.texture || soil.pH || soil.drainage ? "AVAILABLE" : "UNKNOWN", t("results.soilDescription")],
     [t("results.water"), hasData(moisture) ? "AVAILABLE" : "UNKNOWN", `${t("results.waterDescription")} ${sourceStatusText(moisture)}`],
     [t("results.cropSuitability"), cropStatus, cropExplanation],
+    [t("preferenceComparison.cardTitle"), "AVAILABLE", <PreferenceAlignmentSummary priorities={priorities} comparisons={preferenceComparisons as Array<{ scenario_id: string; foregrounded_dimensions: string[]; unavailable_preference_dimensions: Record<string, string> }>} />],
   ];
   const moistureItems = hasData(moisture) ? (moisture?.data as Array<Record<string, unknown>>) : [];
   const factorItems = suitability?.factor_results as Array<Record<string, unknown>> | undefined;
