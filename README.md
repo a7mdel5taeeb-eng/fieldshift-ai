@@ -2,6 +2,8 @@
 
 FieldShift AI is an evidence-based crop-rotation decision-support project for the 2026 NASA International Space Apps Challenge, "Field Shift: Adapting Farms with NASA Data."
 
+FieldShift AI is a globally scalable agricultural decision-support platform. It is not limited to Saudi Arabia: users may evaluate locations in any country where the required NASA environmental data and approved crop/soil reference information are available. Saudi Arabia / Al-Kharj may be used only as a demonstration or validation case.
+
 The current technical foundation contains no NASA API integration, scientific decision logic, crop datasets, or crop recommendations.
 
 ## Prerequisites

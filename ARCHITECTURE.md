@@ -36,6 +36,8 @@ EXPLANATION
 JUDGE / FARMER UI
 ```
 
+The platform must remain location-configurable and globally extensible. Saudi Arabia / Al-Kharj may be used for a demonstration or validation case only; it is not an architectural product boundary. The initial curated crop set may be small, but the crop knowledge-base design must support extension to approved records for other locations.
+
 The architecture must optimize for:
 
 - scientific traceability;

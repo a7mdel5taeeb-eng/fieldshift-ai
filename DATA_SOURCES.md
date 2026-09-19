@@ -680,6 +680,8 @@ The UI must disclose scale when it affects interpretation.
 
 A demo region must not be selected only because it is convenient.
 
+FieldShift AI is globally scoped. Saudi Arabia / Al-Kharj is a potential demonstration or validation case only and must not be presented as the product's target geography. Any country may be evaluated when the required NASA environmental data and approved crop/soil reference information are available.
+
 Before locking the demo location, verify:
 
 - NASA POWER coverage

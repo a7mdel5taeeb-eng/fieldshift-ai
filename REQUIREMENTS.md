@@ -33,6 +33,8 @@ unqualified agricultural guarantees.
 
 It is a decision-support and scenario-exploration tool.
 
+The product is globally location-configurable. It is not limited to Saudi Arabia; a demonstration location in Saudi Arabia / Al-Kharj does not define the product's target geography.
+
 --------------------------------------------------------
 2. PRIMARY USER
 --------------------------------------------------------
