@@ -20,6 +20,7 @@ from app.schemas.domain import (
     SoilMoistureObservation,
     SoilProfile,
 )
+from app.services import demo_snapshot
 from app.services.preferences import PreferenceCaptureResult, capture
 from app.services.rotation import RotationAssessment
 from app.services.rotation import evaluate as evaluate_rotation
@@ -80,6 +81,7 @@ class EnvironmentResponse(BaseModel):
     warnings: list[str]
     limitations: list[str]
     errors: list[str]
+    source_status: str = "UNAVAILABLE"
 
 
 class SoilMoistureResponse(BaseModel):
@@ -88,6 +90,7 @@ class SoilMoistureResponse(BaseModel):
     warnings: list[str]
     limitations: list[str]
     errors: list[str]
+    source_status: str = "UNAVAILABLE"
 
 
 class SuitabilityRequest(BaseModel):
@@ -111,8 +114,10 @@ class PreferenceCaptureRequest(BaseModel):
 def environment_context(request: EnvironmentRequest) -> EnvironmentResponse:
     try:
         data = power_adapter.fetch(request.latitude, request.longitude, request.start_date, request.end_date)
-        return EnvironmentResponse(data=data, provenance=["NASA POWER Daily API"], warnings=[], limitations=["NASA POWER values use source-native spatial resolution and are not field measurements"], errors=[])
+        return EnvironmentResponse(data=data, provenance=["NASA POWER Daily API"], warnings=[], limitations=["NASA POWER values use source-native spatial resolution and are not field measurements"], errors=[], source_status="LIVE_DATA")
     except PowerAdapterError as error:
+        if demo_snapshot.enabled() and demo_snapshot.matches(request.latitude, request.longitude, str(request.start_date), str(request.end_date)):
+            return EnvironmentResponse(data=demo_snapshot.power(), provenance=["NASA POWER Daily API"], warnings=["DEMO_SNAPSHOT"], limitations=["Demo snapshot; not live data"], errors=[], source_status="DEMO_SNAPSHOT")
         return EnvironmentResponse(data=[], provenance=[], warnings=[], limitations=[], errors=[str(error)])
 
 
@@ -121,8 +126,10 @@ def soil_moisture_context(request: EnvironmentRequest) -> SoilMoistureResponse:
     warnings = quality_warnings(request.start_date, request.end_date)
     try:
         data = smap_adapter.fetch(request.latitude, request.longitude, request.start_date, request.end_date)
-        return SoilMoistureResponse(data=data, provenance=["NASA SMAP SPL4SMGP Version 8"], warnings=warnings, limitations=["9 km model/data-assimilation estimate; not a field measurement"], errors=[])
+        return SoilMoistureResponse(data=data, provenance=["NASA SMAP SPL4SMGP Version 8"], warnings=warnings, limitations=["9 km model/data-assimilation estimate; not a field measurement"], errors=[], source_status="LIVE_DATA")
     except SmapAdapterError as error:
+        if demo_snapshot.enabled() and demo_snapshot.matches(request.latitude, request.longitude, str(request.start_date), str(request.end_date)):
+            return SoilMoistureResponse(data=demo_snapshot.smap(), provenance=["NASA SMAP SPL4SMGP Version 8"], warnings=[*warnings, "DEMO_SNAPSHOT"], limitations=["Demo snapshot; not live data", "9 km model/data-assimilation estimate; not a field measurement"], errors=[], source_status="DEMO_SNAPSHOT")
         return SoilMoistureResponse(data=[], provenance=["NASA SMAP SPL4SMGP Version 8"], warnings=warnings, limitations=["9 km model/data-assimilation estimate; not a field measurement"], errors=[str(error)])
 
 

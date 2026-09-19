@@ -1,7 +1,10 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { App } from "./App";
+import { EvidencePanel } from "./evidence";
 import i18n from "../i18n";
+
+const sourceStatus = (text: string) => screen.getByText((_, element) => Boolean(element?.classList.contains("source-status") && element.textContent?.includes(text)));
 
 afterEach(async () => {
   window.localStorage.clear();
@@ -55,5 +58,42 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "عرض النتائج" }));
 
     expect(await screen.findAllByText("غير معروف")).not.toHaveLength(0);
+  });
+
+  it("shows every English source-status label in evidence", () => {
+    render(<EvidencePanel evidence={[]} sourceStatuses={[
+      { source_name: "NASA POWER", status: "LIVE_DATA" },
+      { source_name: "SMAP cache", status: "CACHED_DATA" },
+      { source_name: "SMAP demo", status: "DEMO_SNAPSHOT" },
+      { source_name: "SMAP", status: "UNAVAILABLE" },
+    ]} />);
+
+    expect(sourceStatus("Live NASA data")).toBeInTheDocument();
+    expect(sourceStatus("Cached data")).toBeInTheDocument();
+    expect(sourceStatus("Demo snapshot")).toBeInTheDocument();
+    expect(sourceStatus("Unavailable")).toBeInTheDocument();
+  });
+
+  it("shows Arabic source-status labels", async () => {
+    await i18n.changeLanguage("ar");
+    render(<EvidencePanel evidence={[]} sourceStatuses={[
+      { source_name: "NASA POWER", status: "LIVE_DATA" },
+      { source_name: "SMAP", status: "DEMO_SNAPSHOT" },
+      { source_name: "Missing source", status: "UNAVAILABLE" },
+    ]} />);
+
+    expect(sourceStatus("بيانات ناسا المباشرة")).toBeInTheDocument();
+    expect(sourceStatus("بيانات العرض التجريبي")).toBeInTheDocument();
+    expect(sourceStatus("غير متوفر")).toBeInTheDocument();
+  });
+
+  it("keeps mixed POWER and SMAP source states separate", () => {
+    render(<EvidencePanel evidence={[]} sourceStatuses={[
+      { source_name: "NASA POWER", status: "LIVE_DATA" },
+      { source_name: "SMAP", status: "DEMO_SNAPSHOT" },
+    ]} />);
+
+    expect(sourceStatus("NASA POWER: Live NASA data")).toBeInTheDocument();
+    expect(sourceStatus("SMAP: Demo snapshot")).toBeInTheDocument();
   });
 });

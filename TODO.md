@@ -87,7 +87,7 @@ M07 Rotation Scenario Engine             DONE
 M08 Farmer Preference Layer              IN_PROGRESS
 M09 Frontend Decision Workflow           DONE
 M10 Evidence & Explainability             DONE
-M11 Demo Snapshot & Reliability           NOT_STARTED
+M11 Demo Snapshot & Reliability           DONE
 M12 Validation & Golden Cases             NOT_STARTED
 M13 Submission Preparation                NOT_STARTED
 M14 Optional Enhancements                 DEFERRED
@@ -1216,7 +1216,7 @@ without reading source code.
 
 # 16. M11 — Demo Snapshot & Reliability
 
-**Status:** NOT_STARTED
+**Status:** DONE
 
 ## Objective
 
@@ -1228,7 +1228,7 @@ Ensure the demo works even if live APIs fail.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -1238,7 +1238,7 @@ Create a small reproducible NASA-data snapshot.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -1252,7 +1252,7 @@ ENABLE_DEMO_SNAPSHOTS
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -1268,7 +1268,7 @@ Test:
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 

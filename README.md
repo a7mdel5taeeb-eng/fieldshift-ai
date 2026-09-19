@@ -66,6 +66,10 @@ The optional SMAP adapter uses the NSIDC DAAC SPL4SMGP Version 8 HDF5 product. W
 
 Use only an uncommitted local `.env` for `NASA_EARTHDATA_TOKEN`; it takes precedence over the legacy `NASA_EARTHDATA_USERNAME`, `NASA_EARTHDATA_PASSWORD`, and `SMAP_GRANULE_URL` fallback. The backend reads the local root `.env` without overwriting environment-provided values. Never commit credentials.
 
+## Demo snapshot mode
+
+Set `ENABLE_DEMO_SNAPSHOTS=true` only for the documented judge-demo case: latitude `24.7`, longitude `47.3`, and `2025-01-01`. If a live POWER or SMAP request for that case fails, the backend returns the validated normalized sample in `data/samples/demo/nasa_demo_snapshot.json` with `source_status: DEMO_SNAPSHOT`; otherwise live success is `LIVE_DATA` and unavailable data is `UNAVAILABLE`. The snapshot contains five NASA POWER variables and SMAP V8 surface/root-zone moisture, captured from real NASA retrievals without credentials or raw granules. It is explicitly not live data. For an offline demo, start the backend with the flag enabled, use the documented location/date, and inspect the evidence view for provenance and limitations. Disable the flag for ordinary live-data use.
+
 ## Local soil and crop references
 
 Local soil profiles support explicit source types and optional fields only; no suitability evaluation is performed. Curated crop identity/provenance records are in `data/reference/crops/`. Use `GET /api/v1/crops`, `GET /api/v1/crops/{crop_id}`, and `POST /api/v1/soil/profile/validate`.

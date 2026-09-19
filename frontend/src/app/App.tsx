@@ -4,6 +4,7 @@ import countries from "i18n-iso-countries";
 import arCountries from "i18n-iso-countries/langs/ar.json";
 import enCountries from "i18n-iso-countries/langs/en.json";
 import { EvidencePanel } from "./evidence";
+import { normalizeSourceStatus } from "./source-status";
 import { reverseGeocode, searchPlaces, type Place } from "../location/geocoding";
 
 const api = "http://127.0.0.1:8000/api/v1";
@@ -25,10 +26,6 @@ function resultStatus(result: ApiResult | null): Status {
 
 export function App() {
   const { t, i18n } = useTranslation();
-  const evidence = [
-    { source_name: "NASA POWER", dataset_or_reference: "POWER Daily API", temporal_resolution: "daily", url: "https://power.larc.nasa.gov/" },
-    { source_name: "NASA NSIDC DAAC", dataset_or_reference: "SMAP SPL4SMGP Version 8", spatial_resolution: "9 km", temporal_resolution: "3-hourly", url: "https://nsidc.org/data/spl4smgp/versions/8", quality_notes: [t("evidence.smapQuality")] },
-  ];
   const [step, setStep] = useState(0);
   const [crops, setCrops] = useState<Crop[]>([]);
   const [country, setCountry] = useState("");
@@ -108,11 +105,16 @@ export function App() {
   const cropStatus = resultStatus(suitability);
   const hasData = (result: ApiResult | null) => Array.isArray(result?.data) && result.data.length > 0;
   const statusText = (status: Status) => t(`results.statuses.${status}`);
+  const sourceStatusText = (result: ApiResult | null) => t(`sourceStatus.${normalizeSourceStatus(result?.source_status)}`);
+  const evidence = [
+    { source_name: "NASA POWER", dataset_or_reference: "POWER Daily API", temporal_resolution: "daily", url: "https://power.larc.nasa.gov/", source_status: normalizeSourceStatus(environment?.source_status) },
+    { source_name: "NASA NSIDC DAAC", dataset_or_reference: "SMAP SPL4SMGP Version 8", spatial_resolution: "9 km", temporal_resolution: "3-hourly", url: "https://nsidc.org/data/spl4smgp/versions/8", source_status: normalizeSourceStatus(moisture?.source_status), quality_notes: [t("evidence.smapQuality")] },
+  ];
   const cropExplanation = cropStatus === "SUITABLE" ? t("results.explanations.suitable") : cropStatus === "LIMITING" ? t("results.explanations.limiting") : t("results.explanations.unknown");
   const fieldCards: [string, Status, string][] = [
-    [t("results.weather"), hasData(environment) ? "AVAILABLE" : "UNKNOWN", t("results.weatherDescription")],
+    [t("results.weather"), hasData(environment) ? "AVAILABLE" : "UNKNOWN", `${t("results.weatherDescription")} ${sourceStatusText(environment)}`],
     [t("results.soil"), soil.texture || soil.pH || soil.drainage ? "AVAILABLE" : "UNKNOWN", t("results.soilDescription")],
-    [t("results.water"), hasData(moisture) ? "AVAILABLE" : "UNKNOWN", t("results.waterDescription")],
+    [t("results.water"), hasData(moisture) ? "AVAILABLE" : "UNKNOWN", `${t("results.waterDescription")} ${sourceStatusText(moisture)}`],
     [t("results.cropSuitability"), cropStatus, cropExplanation],
   ];
   const moistureItems = hasData(moisture) ? (moisture?.data as Array<Record<string, unknown>>) : [];
