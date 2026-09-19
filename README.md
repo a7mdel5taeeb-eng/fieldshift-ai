@@ -31,6 +31,12 @@ npm run typecheck
 npm run build
 ```
 
+### Languages and localization
+
+The frontend supports English (LTR) and Arabic (RTL). Static translations live in `frontend/src/i18n/locales/`, and `frontend/src/i18n/index.ts` configures i18next with English as the fallback language. The selected language is stored locally in the browser; it does not change scientific data, API values, or units.
+
+To add a language, add a locale JSON file, register it in `frontend/src/i18n/index.ts`, and add its direction-aware selector label. Keep API enums and official NASA dataset identifiers unchanged; translate only the user-facing label or explanation around them.
+
 ## Backend
 
 ```bash

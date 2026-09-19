@@ -12,11 +12,13 @@
     "typecheck": "tsc -b --pretty false"
   },
   "dependencies": {
+    "@tailwindcss/vite": "latest",
     "@vitejs/plugin-react": "latest",
+    "i18next": "^26.4.2",
     "react": "latest",
     "react-dom": "latest",
-    "tailwindcss": "latest",
-    "@tailwindcss/vite": "latest"
+    "react-i18next": "^17.0.14",
+    "tailwindcss": "latest"
   },
   "devDependencies": {
     "@eslint/js": "latest",
