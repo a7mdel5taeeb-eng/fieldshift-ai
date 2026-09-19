@@ -140,4 +140,3 @@ def test_gc003_rotation_and_preference_descriptors_have_no_ranking() -> None:
     assert preference.scientific_profile == assessment
     assert preference.evidence == assessment.evidence and preference.provenance == assessment.provenance
     assert all(key not in output_keys(dumped) for key in expected["prohibited_output_keys"])
-
