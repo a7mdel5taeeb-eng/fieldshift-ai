@@ -521,6 +521,14 @@ https://www.fao.org/land-water/resources/tools/software/cropwat/en
 
 # 6. CROP ROTATION / SOIL-HEALTH REFERENCES
 
+# 6A. FUTURE ECONOMIC DATA LAYER
+
+**Status:** RESEARCH_REQUIRED
+
+Economic feasibility is a future supplemental decision-support layer, not a replacement for NASA environmental evidence, local soil, crop science, or rotation analysis. No market price, yield, cost, currency, or financial formula is approved by this document.
+
+Before any economic source can be used, it must have verified licensing, location/region, observation date, currency, provenance, access method, and limitations. If reliable data is unavailable, FieldShift AI must return `ECONOMIC_DATA_UNAVAILABLE` rather than estimate or fabricate profit.
+
 ## DS-AGRONOMY-001 — FAO Conservation Agriculture
 
 **Status:** REFERENCE_ONLY

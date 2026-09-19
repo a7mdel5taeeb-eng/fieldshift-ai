@@ -1414,6 +1414,33 @@ No optional enhancement may delay the core NASA challenge workflow.
 
 ---
 
+# 19A. Future Global Decision-Intelligence Scope
+
+These items are future work only. They do not alter completed M00–M06, start M07, or replace the NASA Field Shift crop-rotation core.
+
+## Country and location UX
+
+- country selection and location/farm context — `NOT_STARTED`
+- latitude/longitude-first globally configurable location flow — `NOT_STARTED`
+- future map-based selection — `NOT_STARTED`
+
+## Crop discovery and alternatives
+
+- Analyze My Crop mode — `NOT_STARTED`
+- Find Suitable Crops mode using supported sourced CropProfiles only — `RESEARCH_REQUIRED`
+- alternative-crop comparison without an unapproved ranking formula — `RESEARCH_REQUIRED`
+
+## Economic feasibility
+
+- economic data-source and licensing research — `RESEARCH_REQUIRED`
+- economic-feasibility methodology, including location/date/currency provenance — `RESEARCH_REQUIRED`
+- economic data adapters — `RESEARCH_REQUIRED`
+- economic comparison UI — `RESEARCH_REQUIRED`
+
+Economic feasibility must be scheduled after the scientific and rotation core is stable. Missing reliable evidence must result in `ECONOMIC_DATA_UNAVAILABLE`, never fabricated estimates. Scientific/agronomic suitability and economic attractiveness remain separate outputs.
+
+---
+
 # 20. Immediate Next Action
 
 The next approved implementation milestone is:

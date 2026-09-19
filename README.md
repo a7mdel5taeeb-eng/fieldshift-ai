@@ -4,6 +4,8 @@ FieldShift AI is an evidence-based crop-rotation decision-support project for th
 
 FieldShift AI is a globally scalable agricultural decision-support platform. It is not limited to Saudi Arabia: users may evaluate locations in any country where the required NASA environmental data and approved crop/soil reference information are available. Saudi Arabia / Al-Kharj may be used only as a demonstration or validation case.
 
+The documented product direction supports three future modes: **Analyze My Crop**, **Find Suitable Crops** (using only supported, sourced crop profiles), and **Plan Crop Rotation**. The current wheat, barley, chickpea, and alfalfa records are MVP examples, not a global crop limitation. Economic feasibility is a future research layer and will only be shown where verified, location-, date-, currency-, and source-aware data exists; otherwise the product must report `ECONOMIC_DATA_UNAVAILABLE`.
+
 The current application includes traceable NASA POWER context and an optional NASA SMAP SPL4SMGP Version 8 soil-moisture adapter. It contains no scientific decision logic or crop recommendations.
 
 ## Prerequisites

@@ -35,6 +35,16 @@ It is a decision-support and scenario-exploration tool.
 
 The product is globally location-configurable. It is not limited to Saudi Arabia; a demonstration location in Saudi Arabia / Al-Kharj does not define the product's target geography.
 
+FieldShift AI supports three future user modes: **Analyze My Crop**, **Find Suitable Crops**, and **Plan Crop Rotation**. NASA environmental data, local/available soil, water/soil-moisture context, crop requirements, and farmer priorities remain the inputs to scientific analysis; alternatives, rotations, and any later economic feasibility layer must preserve sources and limitations.
+
+Country selection, location/farm selection, and latitude/longitude representation are required product-context capabilities. A future map-based selector must remain globally configurable; scientific analysis must use the selected coordinates and only available local/regional evidence.
+
+The initial wheat, barley, chickpea, and alfalfa records are validated MVP examples, not a product limitation. Future crops may be added without rebuilding the application only when their CropProfile has adequate verified scientific and provenance data. No crop is assumed valid in every country.
+
+Economic feasibility is a future `RESEARCH_REQUIRED` layer. It may use only location-, date-, currency-, and source-aware market, yield, input, water, energy, labor, or production-cost data. Where reliable evidence is unavailable, the system must return `ECONOMIC_DATA_UNAVAILABLE`; it must not estimate or fabricate profit.
+
+Alternative-crop comparison is `RESEARCH_REQUIRED`. It may evaluate only supported sourced CropProfiles and must not use an unrestricted AI-generated recommendation system or unapproved ranking formula.
+
 --------------------------------------------------------
 2. PRIMARY USER
 --------------------------------------------------------

@@ -2110,6 +2110,14 @@ A technical feature is complete only when:
 
 # 83. Final Architecture Principle
 
+## Product-scope extension
+
+The architecture must support globally configurable country and location context, while using actual coordinates and available evidence for analysis. It must remain extensible beyond the initial wheat, barley, chickpea, and alfalfa MVP records through independently versioned, sourced CropProfiles.
+
+Future interfaces may support three modes: Analyze My Crop, Find Suitable Crops, and Plan Crop Rotation. Alternative-crop comparison must operate only across supported CropProfiles and remain separate from the rotation engine.
+
+Any future economic-feasibility module is `RESEARCH_REQUIRED`: it must use time-, location-, currency-, and source-aware evidence, return `ECONOMIC_DATA_UNAVAILABLE` when evidence is absent, and remain separate from scientific/agronomic suitability. It must not introduce a combined opaque score.
+
 FieldShift AI should remain:
 
 ```text

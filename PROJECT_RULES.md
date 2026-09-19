@@ -9,6 +9,8 @@ Challenge: Field Shift: Adapting Farms with NASA Data
 
 FieldShift AI is an evidence-based agricultural decision-support system.
 
+FieldShift AI is a globally scalable agricultural decision-intelligence platform that helps farmers understand what they can grow, whether a selected crop is suitable, which environmental and soil constraints matter, which supported alternatives may be more appropriate, how crop rotations can be planned, and—only where verified economic data exists—whether options are economically attractive.
+
 FieldShift AI is a globally scalable platform, not a Saudi Arabia-only product. Users may evaluate agricultural locations in any country where required NASA environmental data and crop/soil reference information are available. Saudi Arabia / Al-Kharj is a possible demonstration or validation case only.
 
 Its purpose is to help farmers explore crop-rotation strategies by
@@ -29,6 +31,8 @@ The project is NOT a generic farming dashboard.
 
 NASA Earth observation data must materially influence the analysis or
 recommendations produced by the system.
+
+Economic feasibility is an additional, source-aware decision-support layer; it must never replace the NASA, soil, crop-science, or crop-rotation core.
 
 ## 2. Core Product Principle
 
@@ -181,6 +185,8 @@ water-related indicators, soil effects, resilience, risks, and other
 approved metrics.
 
 Exact metrics remain subject to scientific validation.
+
+Scientific/agronomic suitability and economic attractiveness must remain separate, explainable outputs. They must not be collapsed into one unexplained score.
 
 ## 10. AI Usage
 
