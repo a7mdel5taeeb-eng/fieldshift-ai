@@ -88,7 +88,7 @@ M08 Farmer Preference Layer              IN_PROGRESS
 M09 Frontend Decision Workflow           DONE
 M10 Evidence & Explainability             DONE
 M11 Demo Snapshot & Reliability           DONE
-M12 Validation & Golden Cases             NOT_STARTED
+M12 Validation & Golden Cases             DONE
 M13 Submission Preparation                NOT_STARTED
 M14 Optional Enhancements                 DEFERRED
 ```
@@ -1280,7 +1280,7 @@ Core demonstration remains usable when an external service fails.
 
 # 17. M12 — Validation & Golden Cases
 
-**Status:** NOT_STARTED
+**Status:** DONE
 
 ## Objective
 
@@ -1292,31 +1292,31 @@ Create confidence in scientific and technical behavior.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ### M12-T02 — Golden Case 2
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ### M12-T03 — Golden Case 3
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ### M12-T04 — Regression Suite
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ### M12-T05 — Manual Scientific Review
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 

@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Stable, structured regression cases for approved FieldShift AI behavior. These fixtures do not create new NASA observations, crop requirements, thresholds, or agricultural claims.",
+  "cases": [
+    {
+      "id": "GC-001-demo-snapshot-wheat",
+      "purpose": "Validate the documented NASA demo snapshot, provenance, and factor-level wheat suitability behavior.",
+      "location": { "latitude": 24.7, "longitude": 47.3 },
+      "date_range": { "start": "2025-01-01", "end": "2025-01-01" },
+      "crop_id": "wheat",
+      "soil_profile": {
+        "source_type": "farmer_provided",
+        "pH": 6.5,
+        "texture": "medium",
+        "drainage": "well (dry spells)",
+        "fixture_note": "Controlled user-entered regression input, not a laboratory measurement or a claim about the demo location."
+      },
+      "nasa_source_mode": "DEMO_SNAPSHOT",
+      "expected": {
+        "power_variables": ["T2M", "T2M_MIN", "T2M_MAX", "PRECTOTCORR", "RH2M"],
+        "smap_layers": ["surface", "root_zone"],
+        "source_statuses": { "power": "DEMO_SNAPSHOT", "smap": "DEMO_SNAPSHOT" },
+        "factor_statuses": {
+          "temperature": "UNKNOWN",
+          "precipitation": "UNKNOWN",
+          "soil_pH": "SUITABLE",
+          "soil_texture": "SUITABLE",
+          "salinity": "UNKNOWN",
+          "drainage": "SUITABLE"
+        },
+        "limiting_factors": [],
+        "unknown_factors": ["temperature", "precipitation", "salinity"],
+        "overall_assessment": "no_documented_limitation",
+        "provenance": { "power_source": "NASA POWER", "smap_doi": "10.5067/T5RUATAQREF8", "crop_source": "FAO ECOCROP" }
+      }
+    },
+    {
+      "id": "GC-002-incomplete-evidence-chickpea",
+      "purpose": "Verify that missing local soil evidence and unavailable NASA sources remain explicit UNKNOWN/UNAVAILABLE states rather than negative evidence.",
+      "location": { "latitude": 24.7, "longitude": 47.3 },
+      "date_range": { "start": "2025-01-01", "end": "2025-01-01" },
+      "crop_id": "chickpea",
+      "soil_profile": {
+        "source_type": "farmer_provided",
+        "texture": "medium",
+        "fixture_note": "Controlled user-entered regression input, not a laboratory measurement or a claim about the demo location. All other supported soil fields are intentionally absent."
+      },
+      "nasa_source_mode": "UNAVAILABLE",
+      "expected": {
+        "source_statuses": { "power": "UNAVAILABLE", "smap": "UNAVAILABLE" },
+        "factor_statuses": {
+          "temperature": "UNKNOWN",
+          "precipitation": "UNKNOWN",
+          "soil_pH": "UNKNOWN",
+          "soil_texture": "SUITABLE",
+          "salinity": "UNKNOWN",
+          "drainage": "UNKNOWN"
+        },
+        "limiting_factors": [],
+        "unknown_factors": ["temperature", "precipitation", "soil_pH", "salinity", "drainage"],
+        "overall_assessment": "no_documented_limitation",
+        "required_limitations": ["CLIMATE_GROWING_PERIOD_UNDEFINED", "LOCAL_SOIL_SALINITY_UNAVAILABLE"]
+      }
+    },
+    {
+      "id": "GC-003-rotation-descriptors",
+      "purpose": "Validate descriptor-only rotation behavior and evidence-safe farmer preferences without ranking or a universal winner.",
+      "location": { "latitude": 24.7, "longitude": 47.3 },
+      "date_range": { "start": "2025-01-01", "end": "2025-01-01" },
+      "rotation": {
+        "id": "golden-rotation",
+        "periods": ["Period 1", "Period 2", "Period 3"],
+        "crop_ids": ["wheat", "wheat", "chickpea"]
+      },
+      "priorities": { "water_conservation": 1, "soil_health": 1, "resilience": 1, "productivity": 1 },
+      "nasa_source_mode": "LIVE_DATA",
+      "expected": {
+        "diversity_descriptors": { "distinct_crop_count": 2, "distinct_family_count": 2 },
+        "repeated_crop_flags": ["wheat"],
+        "repeated_family_flags": ["Poaceae"],
+        "legume_presence": true,
+        "preference_foregrounded_dimensions": ["soil_health", "resilience"],
+        "preference_unavailable_dimensions": {
+          "water_conservation": "PREFERENCE_EVIDENCE_UNAVAILABLE",
+          "productivity": "PREFERENCE_EVIDENCE_UNAVAILABLE"
+        },
+        "prohibited_output_keys": ["score", "rank", "best", "winner", "optimal"]
+      }
+    }
+  ]
+}
