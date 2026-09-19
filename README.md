@@ -62,9 +62,9 @@ The local API health check is available at `http://127.0.0.1:8000/api/v1/health`
 
 ## NASA SMAP soil-moisture context
 
-The optional SMAP adapter uses the NSIDC DAAC SPL4SMGP Version 8 HDF5 product through a locally configured Earthdata Login and an authorized direct granule URL. It reads the official `sm_surface` (0–5 cm) and `sm_rootzone` (0–100 cm) variables in `m3 m-3`, reporting them as 3-hourly, 9 km model/data-assimilation context—not field measurements. The source has a reported geolocation issue from 2026-05-14 through 2026-07-28; Standard data for that period are being reprocessed. See the [official NSIDC collection](https://nsidc.org/data/spl4smgp/versions/8).
+The optional SMAP adapter uses the NSIDC DAAC SPL4SMGP Version 8 HDF5 product. With a locally configured Earthdata bearer token, it uses NASA CMR to discover one matching official V8 granule for the requested coordinates and date range; no manual granule URL is required. It reads the official `sm_surface` (0–5 cm) and `sm_rootzone` (0–100 cm) variables in `m3 m-3`, reporting them as 3-hourly, 9 km model/data-assimilation context—not field measurements. The source has a reported geolocation issue from 2026-05-14 through 2026-07-28; Standard data for that period are being reprocessed. See the [official NSIDC collection](https://nsidc.org/data/spl4smgp/versions/8).
 
-Use only an uncommitted local `.env` for `NASA_EARTHDATA_USERNAME`, `NASA_EARTHDATA_PASSWORD`, and `SMAP_GRANULE_URL`; never commit credentials.
+Use only an uncommitted local `.env` for `NASA_EARTHDATA_TOKEN`; it takes precedence over the legacy `NASA_EARTHDATA_USERNAME`, `NASA_EARTHDATA_PASSWORD`, and `SMAP_GRANULE_URL` fallback. The backend reads the local root `.env` without overwriting environment-provided values. Never commit credentials.
 
 ## Local soil and crop references
 

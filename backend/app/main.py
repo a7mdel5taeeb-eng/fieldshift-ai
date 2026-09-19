@@ -5,7 +5,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from app.adapters.power import PowerAdapter, PowerAdapterError
-from app.adapters.smap import SmapAdapter, SmapAdapterError, quality_warnings
+from app.adapters.smap import (
+    SmapAdapter,
+    SmapAdapterError,
+    load_local_environment,
+    quality_warnings,
+)
 from app.repositories.crops import CropNotFoundError, CropRepository
 from app.schemas.domain import (
     ClimateObservation,
@@ -31,6 +36,8 @@ class MetaResponse(BaseModel):
     version: str
     challenge_name: str
 
+
+load_local_environment()
 
 app = FastAPI(title="FieldShift AI", version="0.1.0")
 power_adapter = PowerAdapter()

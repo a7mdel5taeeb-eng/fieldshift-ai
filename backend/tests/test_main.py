@@ -1,6 +1,9 @@
 from fastapi.testclient import TestClient
 
-from app.main import app
+import app.main as main
+from app.adapters.smap import SmapAdapter
+
+app = main.app
 
 client = TestClient(app)
 
@@ -23,7 +26,12 @@ def test_meta_returns_project_metadata() -> None:
     }
 
 
-def test_soil_moisture_context_fails_without_credentials() -> None:
+def test_soil_moisture_context_fails_without_credentials(monkeypatch) -> None:
+    monkeypatch.delenv("NASA_EARTHDATA_TOKEN", raising=False)
+    monkeypatch.delenv("NASA_EARTHDATA_USERNAME", raising=False)
+    monkeypatch.delenv("NASA_EARTHDATA_PASSWORD", raising=False)
+    monkeypatch.delenv("SMAP_GRANULE_URL", raising=False)
+    monkeypatch.setattr(main, "smap_adapter", SmapAdapter())
     response = client.post("/api/v1/soil-moisture/context", json={"latitude": 24.7, "longitude": 47.3, "start_date": "2025-01-01", "end_date": "2025-01-02"})
 
     assert response.status_code == 200
