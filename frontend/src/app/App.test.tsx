@@ -5,7 +5,7 @@ import { EvidencePanel } from "./evidence";
 import { PreferenceAlignmentSummary } from "./preference-alignment";
 import i18n from "../i18n";
 
-const sourceStatus = (text: string) => screen.getByText((_, element) => Boolean(element?.classList.contains("source-status") && element.textContent?.includes(text)));
+const sourceStatus = (text: string) => screen.getAllByText((_, element) => Boolean(element?.classList.contains("source-status") && element.textContent?.includes(text)))[0];
 
 afterEach(async () => {
   window.localStorage.clear();
@@ -58,7 +58,7 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "المتابعة إلى التحليل" }));
     fireEvent.click(screen.getByRole("button", { name: "عرض النتائج" }));
 
-    expect(await screen.findAllByText("غير معروف")).not.toHaveLength(0);
+    expect(await screen.findByText("معلومات التربة غير مكتملة.")).toBeInTheDocument();
   });
 
   it("shows every English source-status label in evidence", () => {
@@ -108,8 +108,8 @@ describe("App", () => {
     expect(screen.getByText("More aligned with your stated priorities")).toBeInTheDocument();
     expect(screen.getByText(/Soil Health: qualitative rotation evidence is shown/)).toBeInTheDocument();
     expect(screen.getByText(/Resilience: qualitative rotation-diversity evidence is shown/)).toBeInTheDocument();
-    expect(screen.getByText(/Water Conservation: PREFERENCE_EVIDENCE_UNAVAILABLE/)).toBeInTheDocument();
-    expect(screen.getByText(/Productivity: PREFERENCE_EVIDENCE_UNAVAILABLE/)).toBeInTheDocument();
+    expect(screen.getByText(/Water Conservation: evidence not yet sufficient/)).toBeInTheDocument();
+    expect(screen.getByText(/Productivity: evidence not yet sufficient/)).toBeInTheDocument();
     expect(screen.queryByText(/best|winner|optimal/i)).not.toBeInTheDocument();
   });
 
@@ -136,6 +136,6 @@ describe("App", () => {
 
     expect(screen.getByText("أكثر اتساقًا مع أولوياتك المعلنة")).toBeInTheDocument();
     expect(screen.getByText(/صحة التربة: تظهر أدلة تناوب نوعية/)).toBeInTheDocument();
-    expect(screen.getByText(/ترشيد استهلاك المياه: PREFERENCE_EVIDENCE_UNAVAILABLE/)).toBeInTheDocument();
+    expect(screen.getByText(/ترشيد استهلاك المياه: الأدلة غير كافية للمقارنة بعد/)).toBeInTheDocument();
   });
 });
