@@ -11,10 +11,11 @@ from .domain import (
     SoilMoistureLayer,
     SoilMoistureObservation,
     SoilProfile,
+    SoilSourceType,
 )
 
 __all__ = [
     "ClimateObservation", "CropProfile", "FarmerPriorities", "Location",
     "ProvenanceRecord", "RotationScenario", "ScientificScenarioProfile",
-    "SoilMoistureLayer", "SoilMoistureObservation", "SoilProfile",
+    "SoilMoistureLayer", "SoilMoistureObservation", "SoilProfile", "SoilSourceType",
 ]

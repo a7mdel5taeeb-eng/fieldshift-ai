@@ -1,11 +1,12 @@
 from datetime import date
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from app.adapters.power import PowerAdapter, PowerAdapterError
-from app.schemas.domain import ClimateObservation
+from app.repositories.crops import CropNotFoundError, CropRepository
+from app.schemas.domain import ClimateObservation, CropProfile, SoilProfile
 
 
 class HealthResponse(BaseModel):
@@ -20,6 +21,7 @@ class MetaResponse(BaseModel):
 
 app = FastAPI(title="FieldShift AI", version="0.1.0")
 power_adapter = PowerAdapter()
+crop_repository = CropRepository()
 
 app.add_middleware(
     CORSMiddleware,
@@ -65,3 +67,14 @@ def environment_context(request: EnvironmentRequest) -> EnvironmentResponse:
         return EnvironmentResponse(data=data, provenance=["NASA POWER Daily API"], warnings=[], limitations=["NASA POWER values use source-native spatial resolution and are not field measurements"], errors=[])
     except PowerAdapterError as error:
         return EnvironmentResponse(data=[], provenance=[], warnings=[], limitations=[], errors=[str(error)])
+
+@app.get("/api/v1/crops", response_model=list[CropProfile])
+def list_crops() -> list[CropProfile]: return crop_repository.list()
+@app.get("/api/v1/crops/{crop_id}", response_model=CropProfile)
+def get_crop(crop_id: str) -> CropProfile:
+    try:
+        return crop_repository.get(crop_id)
+    except CropNotFoundError as error:
+        raise HTTPException(404, "CROP_NOT_SUPPORTED") from error
+@app.post("/api/v1/soil/profile/validate", response_model=SoilProfile)
+def validate_soil(profile: SoilProfile) -> SoilProfile: return profile

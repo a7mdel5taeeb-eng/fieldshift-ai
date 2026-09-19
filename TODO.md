@@ -617,7 +617,7 @@ A judge/developer can select a valid location and retrieve traceable NASA POWER 
 
 # 9. M04 — Local Soil + Crop Reference Layer
 
-**Status:** NOT_STARTED
+**Status:** DONE
 
 ## Objective
 
@@ -638,7 +638,7 @@ Clearly distinguish:
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -655,7 +655,7 @@ Do not invent agronomic thresholds.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -665,7 +665,7 @@ Select 3–6 demo crops.
 
 Status:
 
-`RESEARCH_REQUIRED`
+`DONE`
 
 Selection must consider:
 
@@ -692,7 +692,7 @@ Every value must include source provenance.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -702,7 +702,7 @@ Implement read-only crop repository.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -717,7 +717,7 @@ GET /api/v1/crops/{crop_id}
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 

@@ -45,3 +45,7 @@ ruff check .
 ```
 
 The local API health check is available at `http://127.0.0.1:8000/api/v1/health`.
+
+## Local soil and crop references
+
+Local soil profiles support explicit source types and optional fields only; no suitability evaluation is performed. Curated crop identity/provenance records are in `data/reference/crops/`. Use `GET /api/v1/crops`, `GET /api/v1/crops/{crop_id}`, and `POST /api/v1/soil/profile/validate`.

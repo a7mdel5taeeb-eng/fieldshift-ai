@@ -1,4 +1,5 @@
 """Transport-safe domain models; scientific interpretation belongs to later milestones."""
+from __future__ import annotations
 
 from datetime import datetime
 from enum import StrEnum
@@ -65,7 +66,10 @@ class SoilMoistureObservation(BaseModel):
 
 
 class SoilProfile(BaseModel):
-    source_type: str | None = None
+    source_type: str | None = Field(
+        default=None,
+        pattern="^(laboratory_measurement|farmer_provided|local_record|modeled_estimate|unknown)$",
+    )
     measurement_date: datetime | None = None
     depth: str | None = None
     texture: str | None = None
@@ -78,6 +82,14 @@ class SoilProfile(BaseModel):
     drainage: str | None = None
     water_holding_capacity: float | None = None
     provenance: list[ProvenanceRecord] = Field(default_factory=list)
+
+
+class SoilSourceType(StrEnum):
+    LABORATORY_MEASUREMENT = "laboratory_measurement"
+    FARMER_PROVIDED = "farmer_provided"
+    LOCAL_RECORD = "local_record"
+    MODELED_ESTIMATE = "modeled_estimate"
+    UNKNOWN = "unknown"
 
 
 class CropProfile(BaseModel):
