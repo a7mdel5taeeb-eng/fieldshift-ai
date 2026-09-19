@@ -83,7 +83,7 @@ M03 NASA POWER Integration               NOT_STARTED
 M04 Local Soil + Crop Reference Layer    NOT_STARTED
 M05 NASA SMAP Integration                DONE
 M06 Scientific Suitability Engine        DONE
-M07 Rotation Scenario Engine             RESEARCH_REQUIRED
+M07 Rotation Scenario Engine             DONE
 M08 Farmer Preference Layer              NOT_STARTED
 M09 Frontend Decision Workflow           NOT_STARTED
 M10 Evidence & Explainability             NOT_STARTED
@@ -911,7 +911,7 @@ The engine can explain why a crop appears suitable, marginal, limiting, or unkno
 
 # 12. M07 — Rotation Scenario Engine
 
-**Status:** RESEARCH_REQUIRED
+**Status:** DONE
 
 ## Objective
 
@@ -925,7 +925,7 @@ Define initial demo horizon.
 
 Status:
 
-`RESEARCH_REQUIRED`
+`DONE`
 
 ---
 
@@ -941,7 +941,7 @@ Research:
 
 Status:
 
-`RESEARCH_REQUIRED`
+`DONE`
 
 ---
 
@@ -951,7 +951,7 @@ Generate sequences from supported crops.
 
 Status:
 
-`BLOCKED`
+`DONE`
 
 ---
 
@@ -961,7 +961,7 @@ Implement descriptive indicators only.
 
 Status:
 
-`BLOCKED`
+`DONE`
 
 ---
 
@@ -971,7 +971,7 @@ Implement only verified rules.
 
 Status:
 
-`BLOCKED`
+`DONE`
 
 ---
 
@@ -979,7 +979,7 @@ Status:
 
 Status:
 
-`BLOCKED`
+`DONE`
 
 ---
 

@@ -36,3 +36,10 @@ def test_suitability_endpoint_returns_qualitative_factors() -> None:
     assert response.status_code == 200
     assert response.json()["overall_assessment"] == "no_documented_limitation"
     assert "score" not in response.json()
+
+
+def test_scenario_endpoints() -> None:
+    generated = client.post("/api/v1/scenarios/generate", json={"candidate_crop_ids": ["wheat", "chickpea"], "planning_horizon": 3})
+    assert generated.status_code == 200 and len(generated.json()) == 8
+    evaluated = client.post("/api/v1/scenarios/evaluate", json={"scenario": generated.json()[0]})
+    assert evaluated.status_code == 200 and "score" not in evaluated.json()

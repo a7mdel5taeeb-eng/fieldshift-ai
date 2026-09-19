@@ -7,7 +7,16 @@ from pydantic import BaseModel
 from app.adapters.power import PowerAdapter, PowerAdapterError
 from app.adapters.smap import SmapAdapter, SmapAdapterError, quality_warnings
 from app.repositories.crops import CropNotFoundError, CropRepository
-from app.schemas.domain import ClimateObservation, CropProfile, SoilMoistureObservation, SoilProfile
+from app.schemas.domain import (
+    ClimateObservation,
+    CropProfile,
+    RotationScenario,
+    SoilMoistureObservation,
+    SoilProfile,
+)
+from app.services.rotation import RotationAssessment
+from app.services.rotation import evaluate as evaluate_rotation
+from app.services.rotation import generate as generate_scenarios
 from app.services.suitability import CropSuitabilityResult, evaluate
 
 
@@ -76,6 +85,15 @@ class SuitabilityRequest(BaseModel):
     crop_id: str
     soil: SoilProfile
 
+
+class ScenarioGenerateRequest(BaseModel):
+    candidate_crop_ids: list[str]
+    planning_horizon: int = 3
+
+
+class ScenarioEvaluateRequest(BaseModel):
+    scenario: RotationScenario
+
 @app.post("/api/v1/environment/context", response_model=EnvironmentResponse)
 def environment_context(request: EnvironmentRequest) -> EnvironmentResponse:
     try:
@@ -101,6 +119,23 @@ def suitability_evaluate(request: SuitabilityRequest) -> CropSuitabilityResult:
         return evaluate(crop_repository.get(request.crop_id), request.soil)
     except CropNotFoundError as error:
         raise HTTPException(404, "CROP_NOT_SUPPORTED") from error
+
+
+@app.post("/api/v1/scenarios/generate", response_model=list[RotationScenario])
+def scenario_generate(request: ScenarioGenerateRequest) -> list[RotationScenario]:
+    try:
+        crops = [crop_repository.get(crop_id) for crop_id in request.candidate_crop_ids]
+        return generate_scenarios(crops, request.planning_horizon)
+    except (CropNotFoundError, ValueError) as error:
+        raise HTTPException(400, str(error)) from error
+
+
+@app.post("/api/v1/scenarios/evaluate", response_model=RotationAssessment)
+def scenario_evaluate(request: ScenarioEvaluateRequest) -> RotationAssessment:
+    try:
+        return evaluate_rotation(request.scenario, crop_repository.list())
+    except ValueError as error:
+        raise HTTPException(400, str(error)) from error
 
 @app.get("/api/v1/crops", response_model=list[CropProfile])
 def list_crops() -> list[CropProfile]: return crop_repository.list()

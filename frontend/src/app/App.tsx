@@ -27,6 +27,11 @@ export function App() {
           <p className="mt-3 text-sm text-slate-300">Factor labels: SUITABLE, MARGINAL, LIMITING, or UNKNOWN. Temperature and precipitation remain UNKNOWN until a crop-specific growing period is documented.</p>
           <p className="mt-2 text-sm text-slate-400">No numerical score, crop recommendation, or rotation decision is shown.</p>
         </section>
+        <section className="mt-10 border-t border-slate-700 pt-6" aria-labelledby="rotation-heading">
+          <h2 id="rotation-heading" className="text-2xl font-semibold">Rotation scenarios</h2>
+          <p className="mt-3 text-sm text-slate-300">Choose supported crops and a generic planning horizon to inspect unranked sequences. The MVP horizon is three periods; no calendar months are assumed.</p>
+          <p className="mt-2 text-sm text-slate-400">Each scenario exposes crop families, distinct-crop/family descriptors, sourced repeated-crop or repeated-family warnings, legume presence, limitations, and evidence. No scenario is labelled best.</p>
+        </section>
       </section>
     </main>
   );
