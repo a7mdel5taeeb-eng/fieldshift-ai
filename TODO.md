@@ -86,7 +86,7 @@ M06 Scientific Suitability Engine        DONE
 M07 Rotation Scenario Engine             DONE
 M08 Farmer Preference Layer              IN_PROGRESS
 M09 Frontend Decision Workflow           DONE
-M10 Evidence & Explainability             NOT_STARTED
+M10 Evidence & Explainability             DONE
 M11 Demo Snapshot & Reliability           NOT_STARTED
 M12 Validation & Golden Cases             NOT_STARTED
 M13 Submission Preparation                NOT_STARTED
@@ -1128,7 +1128,7 @@ A judge can complete the core workflow in approximately 1–2 minutes.
 
 # 15. M10 — Evidence & Explainability
 
-**Status:** NOT_STARTED
+**Status:** DONE
 
 ## Objective
 
@@ -1150,7 +1150,7 @@ Show:
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -1160,7 +1160,7 @@ Implement explanations from structured evidence.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -1168,7 +1168,7 @@ Status:
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -1178,7 +1178,7 @@ Ensure UI avoids unsupported certainty.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
