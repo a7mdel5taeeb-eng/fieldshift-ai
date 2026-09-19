@@ -1136,6 +1136,14 @@ Status:
 
 `DONE`
 
+### M09-T11 — Global location and GPS UX refinement
+
+Add explicit browser GPS, a searchable global country/place flow, coordinate synchronization, manual override, and accessible localized status handling. Latitude and longitude remain the only scientific location inputs.
+
+Status:
+
+`DONE`
+
 ---
 
 # 15. M10 — Evidence & Explainability

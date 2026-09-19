@@ -37,6 +37,10 @@ The frontend supports English (LTR) and Arabic (RTL). Static translations live i
 
 To add a language, add a locale JSON file, register it in `frontend/src/i18n/index.ts`, and add its direction-aware selector label. Keep API enums and official NASA dataset identifiers unchanged; translate only the user-facing label or explanation around them.
 
+### Farm location
+
+Farm location can be selected with browser GPS, a searchable global country/place flow, or manual coordinates. Scientific requests continue to use only latitude and longitude. Place search and optional GPS reverse-geocoding use the user-triggered, rate-limited Nominatim service with OpenStreetMap attribution; it is not used for autocomplete and can be changed with `VITE_GEOCODING_BASE_URL`.
+
 ## Backend
 
 ```bash
