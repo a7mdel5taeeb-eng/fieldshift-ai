@@ -84,7 +84,7 @@ M04 Local Soil + Crop Reference Layer    NOT_STARTED
 M05 NASA SMAP Integration                DONE
 M06 Scientific Suitability Engine        DONE
 M07 Rotation Scenario Engine             DONE
-M08 Farmer Preference Layer              NOT_STARTED
+M08 Farmer Preference Layer              IN_PROGRESS
 M09 Frontend Decision Workflow           NOT_STARTED
 M10 Evidence & Explainability             NOT_STARTED
 M11 Demo Snapshot & Reliability           NOT_STARTED
@@ -991,7 +991,7 @@ Multiple rotation scenarios can be generated and compared using sourced rules an
 
 # 13. M08 — Farmer Preference Layer
 
-**Status:** NOT_STARTED
+**Status:** IN_PROGRESS
 
 ## Objective
 
@@ -1010,7 +1010,7 @@ Candidate categories:
 
 Status:
 
-`NOT_STARTED`
+`DONE` — evidence-safe preference capture only
 
 ---
 
@@ -1030,7 +1030,7 @@ Status:
 
 Status:
 
-`BLOCKED`
+`IN_PROGRESS` — capture API complete; preference-based ordering remains blocked
 
 ---
 
@@ -1040,13 +1040,17 @@ Explain how user priorities changed scenario ordering.
 
 Status:
 
-`BLOCKED`
+`RESEARCH_REQUIRED`
 
 ---
 
 ## M08 Definition of Done
 
 Changing user priorities changes only the preference layer, not the underlying scientific evidence.
+
+### M08 research dependency: evidence-safe scenario ordering
+
+Preference-based ordering remains `RESEARCH_REQUIRED` until source-backed mappings exist. Water conservation requires an approved water-demand methodology; soil health requires sourced soil-health/rotation indicators; resilience requires defined evidence-based resilience dimensions; productivity requires an approved productivity/yield methodology. Until then every dimension returns `PREFERENCE_EVIDENCE_UNAVAILABLE` and no scenario is reordered.
 
 ---
 

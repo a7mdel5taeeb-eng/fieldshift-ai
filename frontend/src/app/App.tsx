@@ -1,6 +1,8 @@
 import { useState } from "react";
 export function App() {
   const [loading, setLoading] = useState(false); const [error, setError] = useState("");
+  const [priorities, setPriorities] = useState({ water_conservation: 0, soil_health: 0, resilience: 0, productivity: 0 });
+  const total = Object.values(priorities).reduce((sum, value) => sum + value, 0);
   return (
     <main className="min-h-screen bg-slate-950 px-6 py-16 text-slate-100 sm:px-10">
       <section className="mx-auto max-w-3xl">
@@ -31,6 +33,14 @@ export function App() {
           <h2 id="rotation-heading" className="text-2xl font-semibold">Rotation scenarios</h2>
           <p className="mt-3 text-sm text-slate-300">Choose supported crops and a generic planning horizon to inspect unranked sequences. The MVP horizon is three periods; no calendar months are assumed.</p>
           <p className="mt-2 text-sm text-slate-400">Each scenario exposes crop families, distinct-crop/family descriptors, sourced repeated-crop or repeated-family warnings, legume presence, limitations, and evidence. No scenario is labelled best.</p>
+        </section>
+        <section className="mt-10 border-t border-slate-700 pt-6" aria-labelledby="priorities-heading">
+          <h2 id="priorities-heading" className="text-2xl font-semibold">Farmer priorities</h2>
+          <p className="mt-3 text-sm text-cyan-200">These priorities describe what matters most to you. They do not change the underlying scientific assessment.</p>
+          <p className="mt-2 text-sm text-slate-400">USER PREFERENCES — not scientific weights. Scenario ordering is unavailable until source-backed mappings are approved.</p>
+          {Object.entries(priorities).map(([key, value]) => <label className="mt-3 block text-sm" key={key}>{key.replace("_", " ")}: {value}<input aria-label={key} className="ml-3 align-middle" type="range" min="0" max="10" value={value} onChange={(event) => setPriorities({ ...priorities, [key]: Number(event.target.value) })} /></label>)}
+          <p className="mt-3 text-sm text-slate-300">Normalized values: {Object.entries(priorities).map(([key, value]) => `${key} ${total ? (value / total).toFixed(2) : "0.00"}`).join(" · ")}</p>
+          <p className="mt-2 text-sm text-amber-200">PREFERENCE_EVIDENCE_UNAVAILABLE for water conservation, soil health, resilience, and productivity.</p>
         </section>
       </section>
     </main>

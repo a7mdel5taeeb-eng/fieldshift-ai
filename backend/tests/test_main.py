@@ -43,3 +43,8 @@ def test_scenario_endpoints() -> None:
     assert generated.status_code == 200 and len(generated.json()) == 8
     evaluated = client.post("/api/v1/scenarios/evaluate", json={"scenario": generated.json()[0]})
     assert evaluated.status_code == 200 and "score" not in evaluated.json()
+
+
+def test_preference_capture_endpoint() -> None:
+    response = client.post("/api/v1/preferences/capture", json={"priorities": {"water_conservation": 3, "soil_health": 1}})
+    assert response.status_code == 200 and response.json()["normalized_priorities"]["water_conservation"] == 0.75

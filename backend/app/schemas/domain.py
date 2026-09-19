@@ -106,10 +106,10 @@ class CropProfile(BaseModel):
 
 
 class FarmerPriorities(BaseModel):
-    water_conservation: float | None = None
-    soil_health: float | None = None
-    resilience: float | None = None
-    productivity: float | None = None
+    water_conservation: float | None = Field(default=None, ge=0)
+    soil_health: float | None = Field(default=None, ge=0)
+    resilience: float | None = Field(default=None, ge=0)
+    productivity: float | None = Field(default=None, ge=0)
 
 
 class RotationScenario(BaseModel):

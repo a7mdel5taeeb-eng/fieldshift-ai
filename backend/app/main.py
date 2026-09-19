@@ -10,10 +10,12 @@ from app.repositories.crops import CropNotFoundError, CropRepository
 from app.schemas.domain import (
     ClimateObservation,
     CropProfile,
+    FarmerPriorities,
     RotationScenario,
     SoilMoistureObservation,
     SoilProfile,
 )
+from app.services.preferences import PreferenceCaptureResult, capture
 from app.services.rotation import RotationAssessment
 from app.services.rotation import evaluate as evaluate_rotation
 from app.services.rotation import generate as generate_scenarios
@@ -94,6 +96,10 @@ class ScenarioGenerateRequest(BaseModel):
 class ScenarioEvaluateRequest(BaseModel):
     scenario: RotationScenario
 
+
+class PreferenceCaptureRequest(BaseModel):
+    priorities: FarmerPriorities
+
 @app.post("/api/v1/environment/context", response_model=EnvironmentResponse)
 def environment_context(request: EnvironmentRequest) -> EnvironmentResponse:
     try:
@@ -136,6 +142,11 @@ def scenario_evaluate(request: ScenarioEvaluateRequest) -> RotationAssessment:
         return evaluate_rotation(request.scenario, crop_repository.list())
     except ValueError as error:
         raise HTTPException(400, str(error)) from error
+
+
+@app.post("/api/v1/preferences/capture", response_model=PreferenceCaptureResult)
+def preference_capture(request: PreferenceCaptureRequest) -> PreferenceCaptureResult:
+    return capture(request.priorities)
 
 @app.get("/api/v1/crops", response_model=list[CropProfile])
 def list_crops() -> list[CropProfile]: return crop_repository.list()
