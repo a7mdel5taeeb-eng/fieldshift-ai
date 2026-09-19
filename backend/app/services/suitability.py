@@ -60,16 +60,19 @@ def classify_category(factor: str, value: str | None, requirement: dict[str, Any
 def evaluate(crop: CropProfile, soil: SoilProfile) -> CropSuitabilityResult:
     evidence = crop.sources
     # Crop calendars are not approved, so arbitrary NASA POWER date ranges are not climate suitability inputs.
-    climate = [_unknown("temperature", "Crop-specific growing-period timing is not documented." , evidence), _unknown("precipitation", "Crop-specific growing-period timing is not documented.", evidence)]
+    climate = [
+        _unknown("temperature", "CLIMATE_GROWING_PERIOD_UNDEFINED: local planting calendar is not approved.", evidence),
+        _unknown("precipitation", "CLIMATE_GROWING_PERIOD_UNDEFINED: local planting calendar is not approved.", evidence),
+    ]
     requirements = crop.soil_requirements
     soil_results = [
         classify_numeric("soil_pH", soil.pH, requirements.get("ph"), evidence),
         classify_category("soil_texture", soil.texture, requirements.get("texture"), evidence),
-        _unknown("salinity", "Local salinity units are not represented in the current soil-input schema.", evidence),
+        _unknown("salinity", "LOCAL_SOIL_SALINITY_UNAVAILABLE: local salinity units are not represented in the current soil-input schema.", evidence),
         classify_category("drainage", soil.drainage, requirements.get("drainage"), evidence),
     ]
     factors = climate + soil_results
     limiting = [item.factor for item in factors if item.status == "LIMITING"]
     unknown = [item.factor for item in factors if item.status == "UNKNOWN"]
     overall = "potentially_limited" if limiting else "no_documented_limitation" if len(unknown) < len(factors) else "unknown"
-    return CropSuitabilityResult(crop_id=crop.id, climate_assessment=climate, soil_assessment=soil_results, factor_results=factors, overall_assessment=overall, limiting_factors=limiting, unknown_factors=unknown, evidence=evidence, provenance=[*evidence, *soil.provenance], assumptions=[], limitations=["No crop calendar is approved; climate factors remain UNKNOWN.", "No numerical suitability score or recommendation is produced."])
+    return CropSuitabilityResult(crop_id=crop.id, climate_assessment=climate, soil_assessment=soil_results, factor_results=factors, overall_assessment=overall, limiting_factors=limiting, unknown_factors=unknown, evidence=evidence, provenance=[*evidence, *soil.provenance], assumptions=[], limitations=["Local planting calendar is RESEARCH_REQUIRED; climate factors remain UNKNOWN.", "No numerical suitability score or recommendation is produced."])
