@@ -81,7 +81,7 @@ M01 Technical Foundation                 NOT_STARTED
 M02 Core Domain Models                   NOT_STARTED
 M03 NASA POWER Integration               NOT_STARTED
 M04 Local Soil + Crop Reference Layer    NOT_STARTED
-M05 NASA SMAP Integration                NOT_STARTED
+M05 NASA SMAP Integration                DONE
 M06 Scientific Suitability Engine        RESEARCH_REQUIRED
 M07 Rotation Scenario Engine             RESEARCH_REQUIRED
 M08 Farmer Preference Layer              NOT_STARTED
@@ -729,7 +729,7 @@ Local soil input works and approved crop profiles can be loaded with traceable s
 
 # 10. M05 — NASA SMAP Integration
 
-**Status:** NOT_STARTED
+**Status:** DONE
 
 ## Objective
 
@@ -752,7 +752,7 @@ Verify:
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -764,7 +764,7 @@ No credentials committed.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -774,7 +774,7 @@ Implement normalized adapter.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -784,7 +784,7 @@ Explicitly support known source warnings.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -794,7 +794,7 @@ Use small fixtures.
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 
@@ -810,7 +810,7 @@ Show:
 
 Status:
 
-`NOT_STARTED`
+`DONE`
 
 ---
 

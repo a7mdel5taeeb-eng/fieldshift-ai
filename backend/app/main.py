@@ -5,8 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from app.adapters.power import PowerAdapter, PowerAdapterError
+from app.adapters.smap import SmapAdapter, SmapAdapterError, quality_warnings
 from app.repositories.crops import CropNotFoundError, CropRepository
-from app.schemas.domain import ClimateObservation, CropProfile, SoilProfile
+from app.schemas.domain import ClimateObservation, CropProfile, SoilMoistureObservation, SoilProfile
 
 
 class HealthResponse(BaseModel):
@@ -21,6 +22,7 @@ class MetaResponse(BaseModel):
 
 app = FastAPI(title="FieldShift AI", version="0.1.0")
 power_adapter = PowerAdapter()
+smap_adapter = SmapAdapter()
 crop_repository = CropRepository()
 
 app.add_middleware(
@@ -60,6 +62,14 @@ class EnvironmentResponse(BaseModel):
     limitations: list[str]
     errors: list[str]
 
+
+class SoilMoistureResponse(BaseModel):
+    data: list[SoilMoistureObservation]
+    provenance: list[str]
+    warnings: list[str]
+    limitations: list[str]
+    errors: list[str]
+
 @app.post("/api/v1/environment/context", response_model=EnvironmentResponse)
 def environment_context(request: EnvironmentRequest) -> EnvironmentResponse:
     try:
@@ -67,6 +77,16 @@ def environment_context(request: EnvironmentRequest) -> EnvironmentResponse:
         return EnvironmentResponse(data=data, provenance=["NASA POWER Daily API"], warnings=[], limitations=["NASA POWER values use source-native spatial resolution and are not field measurements"], errors=[])
     except PowerAdapterError as error:
         return EnvironmentResponse(data=[], provenance=[], warnings=[], limitations=[], errors=[str(error)])
+
+
+@app.post("/api/v1/soil-moisture/context", response_model=SoilMoistureResponse)
+def soil_moisture_context(request: EnvironmentRequest) -> SoilMoistureResponse:
+    warnings = quality_warnings(request.start_date, request.end_date)
+    try:
+        data = smap_adapter.fetch(request.latitude, request.longitude, request.start_date, request.end_date)
+        return SoilMoistureResponse(data=data, provenance=["NASA SMAP SPL4SMGP Version 8"], warnings=warnings, limitations=["9 km model/data-assimilation estimate; not a field measurement"], errors=[])
+    except SmapAdapterError as error:
+        return SoilMoistureResponse(data=[], provenance=["NASA SMAP SPL4SMGP Version 8"], warnings=warnings, limitations=["9 km model/data-assimilation estimate; not a field measurement"], errors=[str(error)])
 
 @app.get("/api/v1/crops", response_model=list[CropProfile])
 def list_crops() -> list[CropProfile]: return crop_repository.list()

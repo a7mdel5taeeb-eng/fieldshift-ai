@@ -13,6 +13,13 @@ export function App() {
         <button onClick={() => { setLoading(true); setError(""); setTimeout(() => { setLoading(false); setError("Connect the local backend to load data."); }, 100); }} className="mt-4 rounded bg-cyan-300 px-4 py-2 font-semibold text-slate-950">Load NASA Data</button>
         {loading && <p className="mt-3">Loading NASA POWER data…</p>}{error && <p role="alert" className="mt-3">{error}</p>}
         <p className="mt-6 text-sm text-slate-400">Source: NASA POWER. Values are source-native resolution, not field measurements.</p>
+        <section className="mt-10 border-t border-slate-700 pt-6" aria-labelledby="smap-heading">
+          <h2 id="smap-heading" className="text-2xl font-semibold">NASA SMAP soil-moisture context</h2>
+          <p className="mt-3 text-slate-300">Surface (0–5 cm) and root-zone (0–100 cm) moisture are available as volumetric values when an authorized source granule is configured.</p>
+          <p className="mt-3 text-sm text-slate-400">Source: NASA SMAP SPL4SMGP Version 8 · 3-hourly · 9 km EASE-Grid 2.0 · not a field sensor measurement.</p>
+          <p className="mt-2 text-sm text-amber-200">Quality notice: 2026-05-14 to 2026-07-28 has a reported geolocation issue; Standard products are being reprocessed.</p>
+          <p className="mt-2 text-sm text-slate-400">Loading and unavailable states are supported by the soil-moisture endpoint. Status: unavailable until NASA Earthdata access and an authorized SMAP granule are configured locally.</p>
+        </section>
       </section>
     </main>
   );

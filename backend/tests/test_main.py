@@ -21,3 +21,10 @@ def test_meta_returns_project_metadata() -> None:
         "version": "0.1.0",
         "challenge_name": "Field Shift: Adapting Farms with NASA Data",
     }
+
+
+def test_soil_moisture_context_fails_without_credentials() -> None:
+    response = client.post("/api/v1/soil-moisture/context", json={"latitude": 24.7, "longitude": 47.3, "start_date": "2025-01-01", "end_date": "2025-01-02"})
+
+    assert response.status_code == 200
+    assert response.json()["errors"] == ["SMAP_AUTH_CONFIG_REQUIRED"]
