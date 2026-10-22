@@ -1,0 +1,20 @@
+{
+  "id": "maize",
+  "common_name": "Maize",
+  "scientific_name": "Zea mays",
+  "family": "Poaceae",
+  "climate_requirements": {
+    "temperature_c": { "optimum": { "min": 18, "max": 33 }, "absolute": { "min": 10, "max": 47 }, "source_id": "FAO_ECOCROP_2175" },
+    "annual_precipitation_mm": { "optimum": { "min": 600, "max": 1200 }, "absolute": { "min": 400, "max": 1800 }, "source_id": "FAO_ECOCROP_2175" }
+  },
+  "soil_requirements": {
+    "ph": { "optimum": { "min": 5, "max": 7 }, "absolute": { "min": 4.5, "max": 8.5 }, "source_id": "FAO_ECOCROP_2175" },
+    "salinity": { "optimum": "low (<4 dS/m)", "absolute": "medium (4-10 dS/m)", "source_id": "FAO_ECOCROP_2175" }
+  },
+  "water_requirements": {},
+  "rotation_traits": {},
+  "sources": [{ "source_name": "FAO ECOCROP", "source_type": "EXTERNAL_REFERENCE", "url": "https://ecocrop.apps.fao.org/ecocrop/srv/en/dataSheet?id=2175", "citation": "FAO ECOCROP data sheet: Zea mays, accessed 2026-10-22" }],
+  "review_status": "REVIEWED_FOR_CROP_LIBRARY_EXPANSION",
+  "record_version": "1.0",
+  "reviewed_at": "2026-10-22"
+}

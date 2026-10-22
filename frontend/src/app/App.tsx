@@ -5,9 +5,12 @@ import arCountries from "i18n-iso-countries/langs/ar.json";
 import enCountries from "i18n-iso-countries/langs/en.json";
 import { EvidencePanel } from "./evidence";
 import { FarmerResults } from "./farmer-results";
+import { BrandMark } from "./brand-mark";
+import { IntroExperience } from "./intro-experience";
+import { FarmStep } from "./farm-step";
 import { reverseGeocode, searchPlaces, type Place } from "../location/geocoding";
 
-const api = "http://127.0.0.1:8000/api/v1";
+const api = import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? "http://127.0.0.1:8000/api/v1" : "/api/v1");
 const stepKeys = ["location", "farmCrop", "analysis", "results"] as const;
 const stageKeys = ["weather", "soil", "water", "cropConditions", "rotationContext"] as const;
 countries.registerLocale(enCountries);
@@ -17,6 +20,7 @@ type ApiResult = Record<string, unknown>;
 
 export function App() {
   const { t, i18n } = useTranslation();
+  const [showIntro, setShowIntro] = useState(true);
   const [step, setStep] = useState(0);
   const [crops, setCrops] = useState<Crop[]>([]);
   const [country, setCountry] = useState("");
@@ -26,8 +30,9 @@ export function App() {
   const [locationMessage, setLocationMessage] = useState("");
   const [locationKind, setLocationKind] = useState<"gps" | "search" | "manual" | "">("");
   const [isLocating, setIsLocating] = useState(false);
-  const [lat, setLat] = useState("24.7");
-  const [lon, setLon] = useState("47.3");
+  const [lat, setLat] = useState("");
+  const [lon, setLon] = useState("");
+  const [observationDate, setObservationDate] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
   const [error, setError] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -37,10 +42,11 @@ export function App() {
   const [, setScenarios] = useState<ApiResult | null>(null);
   const [preferenceComparisons, setPreferenceComparisons] = useState<Array<Record<string, unknown>>>([]);
   const [analysisWarnings, setAnalysisWarnings] = useState<string[]>([]);
-  const [soil, setSoil] = useState({ source_type: "unknown", texture: "", pH: "", drainage: "" });
+  const [soil, setSoil] = useState({ source_type: "unknown", texture: "", pH: "", drainage: "", salinity: "" });
   const [priorities, setPriorities] = useState({ water_conservation: 0, soil_health: 0, resilience: 0, productivity: 0 });
   const countryNames = countries.getNames(i18n.language === "ar" ? "ar" : "en", { select: "official" });
   const countryOptions = Object.entries(countryNames).map(([code, name]) => ({ code, name })).sort((a, b) => a.name.localeCompare(b.name, i18n.language));
+  const validLocation = lat.trim() !== "" && lon.trim() !== "" && Number.isFinite(Number(lat)) && Number.isFinite(Number(lon)) && Number(lat) >= -90 && Number(lat) <= 90 && Number(lon) >= -180 && Number(lon) <= 180;
 
   useEffect(() => {
     document.documentElement.lang = i18n.language === "ar" ? "ar" : "en";
@@ -48,8 +54,8 @@ export function App() {
   }, [i18n.language]);
 
   useEffect(() => {
-    fetch(`${api}/crops`).then((response) => response.ok ? response.json() : Promise.reject()).then(setCrops).catch(() => setError(t("errors.cropLibrary")));
-  }, [t]);
+    fetch(`${api}/crops`).then((response) => response.ok ? response.json() : Promise.reject()).then(setCrops).catch(() => setError(i18n.t("errors.cropLibrary")));
+  }, [i18n]);
 
   const changeLanguage = async (language: "en" | "ar") => {
     await i18n.changeLanguage(language);
@@ -62,12 +68,14 @@ export function App() {
   };
   const runAnalysis = async () => {
     if (!selected[0]) { setError(t("errors.chooseCrop")); setStep(1); return; }
-    setError(""); setIsAnalyzing(true); setStep(2);
-    const location = { latitude: Number(lat), longitude: Number(lon), start_date: "2025-01-01", end_date: "2025-01-01" };
+    if (!validLocation) { setError(t("locationUX.invalid")); setStep(0); return; }
+    if (!observationDate) { setError(t("observationUX.dateRequired")); setStep(0); return; }
+    setError(""); setIsAnalyzing(true); setStep(2); setEnvironment(null); setMoisture(null); setSuitability(null); setScenarios(null); setPreferenceComparisons([]); setAnalysisWarnings([]);
+    const location = { latitude: Number(lat), longitude: Number(lon), start_date: observationDate, end_date: observationDate };
     try {
       const results = await Promise.allSettled([
         post("/environment/context", location), post("/soil-moisture/context", location),
-        post("/suitability/evaluate", { crop_id: selected[0], soil: { ...soil, pH: soil.pH ? Number(soil.pH) : null } }),
+        post("/suitability/evaluate", { crop_id: selected[0], soil: { ...soil, pH: soil.pH ? Number(soil.pH) : null, salinity: soil.salinity ? Number(soil.salinity) : null } }),
         post("/scenarios/generate", { candidate_crop_ids: selected, planning_horizon: 3 }),
       ]);
       const warnings: string[] = [];
@@ -86,7 +94,11 @@ export function App() {
     } catch { setError(t("errors.analysis")); } finally { setIsAnalyzing(false); }
   };
 
-  const toggleCrop = (cropId: string) => setSelected(selected.includes(cropId) ? selected.filter((id) => id !== cropId) : [...selected, cropId]);
+  const toggleCrop = (cropId: string) => {
+    if (!selected.includes(cropId) && selected.length >= 4) { setError(t("workspace.maxCrops")); return; }
+    setError("");
+    setSelected(selected.includes(cropId) ? selected.filter((id) => id !== cropId) : [...selected, cropId]);
+  };
   const selectPlace = (place: Place, kind: "gps" | "search") => { setLat(place.latitude); setLon(place.longitude); setCountry(place.country ?? country); setCountryCode(place.countryCode ?? countryCode); setPlaceQuery(place.label); setPlaces([]); setLocationKind(kind); setLocationMessage(kind === "gps" ? t("locationUX.detected") : t("locationUX.ready")); };
   const updateCountry = (name: string) => { const entry = countryOptions.find((item) => item.name === name); setCountry(name); setCountryCode(entry?.code ?? ""); setPlaceQuery(""); setPlaces([]); setLat(""); setLon(""); setLocationKind(""); setLocationMessage(""); };
   const useCurrentLocation = () => {
@@ -101,14 +113,17 @@ export function App() {
   const findPlaces = async () => { if (!placeQuery.trim()) return; try { const results = await searchPlaces(placeQuery, countryCode || undefined); setPlaces(results); setLocationMessage(results.length ? "" : t("locationUX.notFound")); } catch { setLocationMessage(t("locationUX.searchUnavailable")); } };
   const updateManualCoordinate = (type: "lat" | "lon", value: string) => { const nextLat = type === "lat" ? value : lat; const nextLon = type === "lon" ? value : lon; setLat(nextLat); setLon(nextLon); setLocationKind("manual"); const valid = Number.isFinite(Number(nextLat)) && Number.isFinite(Number(nextLon)) && Number(nextLat) >= -90 && Number(nextLat) <= 90 && Number(nextLon) >= -180 && Number(nextLon) <= 180; setLocationMessage(valid ? t("locationUX.manual") : t("locationUX.invalid")); };
 
+  if (showIntro) return <IntroExperience onEnter={() => setShowIntro(false)} />;
+
   return <main className="app-shell"><section className="app-container">
-    <header className="app-header"><div className="header-row"><p className="eyebrow">{t("app.eyebrow")}</p><fieldset className="language-switcher" aria-label={t("language.label")}><legend>{t("language.label")}</legend><button type="button" aria-pressed={i18n.language !== "ar"} onClick={() => changeLanguage("en")}>{t("language.english")}</button><button type="button" aria-pressed={i18n.language === "ar"} onClick={() => changeLanguage("ar")}>{t("language.arabic")}</button></fieldset></div><h1>{t("app.title")}</h1><p className="lede">{t("app.subtitle")}</p></header>
+    <header className="app-header"><div className="header-row"><div className="brand-lockup"><span className="brand-mark"><BrandMark /></span><div><p className="eyebrow">{t("app.eyebrow")}</p><span className="brand-caption">{t("experience.researchLabel")}</span></div></div><fieldset className="language-switcher" aria-label={t("language.label")}><legend>{t("language.label")}</legend><button type="button" aria-pressed={i18n.language !== "ar"} onClick={() => changeLanguage("en")}>{t("language.english")}</button><button type="button" aria-pressed={i18n.language === "ar"} onClick={() => changeLanguage("ar")}>{t("language.arabic")}</button></fieldset></div><h1>{t("app.title")}</h1><p className="lede">{t("app.subtitle")}</p></header>
     <ol className="progress" aria-label={t("steps.progress")}>{stepKeys.map((name, index) => <li key={name} aria-current={index === step ? "step" : undefined} className={index === step ? "active" : index < step ? "complete" : ""}><span>{index + 1}</span>{t(`steps.${name}`)}</li>)}</ol>
     {error && <p className="alert" role="alert">{error}</p>}
     {step === 0 && <section className="hero-card"><div><p className="section-kicker">{t("steps.locationKicker")}</p><h2>{t("locationUX.heading")}</h2><p>{t("location.description")}</p></div><div className="location-card"><button className="primary-button gps-button" onClick={useCurrentLocation} disabled={isLocating}>{isLocating ? t("locationUX.locating") : t("locationUX.gps")}</button><p className="helper">{t("locationUX.privacy")}</p><p className="or-divider">{t("locationUX.or")}</p><label>{t("locationUX.countrySearch")}<input aria-label={t("locationUX.countrySearch")} list="countries" value={country} onChange={(event) => updateCountry(event.target.value)} /><datalist id="countries">{countryOptions.map((item) => <option key={item.code} value={item.name} />)}</datalist></label><label>{t("locationUX.place")}<div className="place-search"><input aria-label={t("locationUX.place")} value={placeQuery} onChange={(event) => setPlaceQuery(event.target.value)} placeholder={t("locationUX.placePlaceholder")} /><button className="secondary-button" onClick={findPlaces}>{t("locationUX.search")}</button></div></label>{places.map((place) => <button className="place-option" key={`${place.latitude}-${place.longitude}`} onClick={() => selectPlace(place, "search")}>{place.label}</button>)}{(locationMessage || locationKind) && <p className="location-status" role="status">{locationMessage}</p>}<p className="helper">{t("locationUX.selected")}: {placeQuery || "—"}</p><details><summary>{t("locationUX.advanced")}</summary><div className="input-grid"><label>{t("location.latitude")}<input aria-label={t("location.latitude")} inputMode="decimal" value={lat} onChange={(event) => updateManualCoordinate("lat", event.target.value)} /></label><label>{t("location.longitude")}<input aria-label={t("location.longitude")} inputMode="decimal" value={lon} onChange={(event) => updateManualCoordinate("lon", event.target.value)} /></label></div><p className="helper">{t("locationUX.manualNote")}</p></details><p className="helper">{t("locationUX.attribution")}</p></div></section>}
-    {step === 1 && <section className="step-panel"><div><p className="section-kicker">{t("steps.farmKicker")}</p><h2>{t("farm.heading")}</h2><p>{t("farm.description")}</p></div><div className="farm-grid"><article className="input-card"><h3>{t("farm.conditions")}</h3><p>{t("farmerResults.soil.optional")}</p><label>{t("farm.sourceType")}<select aria-label={t("farm.sourceType")} value={soil.source_type} onChange={(event) => setSoil({ ...soil, source_type: event.target.value })}>{["laboratory_measurement", "farmer_provided", "local_record", "modeled_estimate", "unknown"].map((source) => <option key={source} value={source}>{t(`farm.sources.${source}`)}</option>)}</select></label><div className="input-grid compact"><label>{t("farm.texture")}<input aria-label={t("farm.texture")} value={soil.texture} onChange={(event) => setSoil({ ...soil, texture: event.target.value })} /></label><label>{t("farm.ph")}<input aria-label={t("farm.ph")} value={soil.pH} onChange={(event) => setSoil({ ...soil, pH: event.target.value })} /></label><label>{t("farm.drainage")}<input aria-label={t("farm.drainage")} value={soil.drainage} onChange={(event) => setSoil({ ...soil, drainage: event.target.value })} /></label></div></article><article className="input-card"><h3>{t("farm.crops")}</h3><p>{t("farm.cropsDescription")}</p><div className="crop-list">{crops.map((crop) => <label className="crop-option" key={crop.id}><input type="checkbox" checked={selected.includes(crop.id)} onChange={() => toggleCrop(crop.id)} /><span>{crop.common_name}<small>{crop.family ?? t("farm.supportedCrop")}</small></span></label>)}</div></article><article className="input-card priorities"><h3>{t("farm.priorities")}</h3><p>{t("farm.prioritiesDescription")}</p>{Object.entries(priorities).map(([key, value]) => <label className="priority" key={key}><span>{t(`farm.priority.${key}`)} <strong>{new Intl.NumberFormat(i18n.language).format(value)}</strong></span><input aria-label={t(`farm.priority.${key}`)} type="range" min="0" max="10" value={value} onChange={(event) => setPriorities({ ...priorities, [key]: Number(event.target.value) })} /></label>)}<p className="helper">{t("farmerResults.preferences.supported")}</p><p className="helper">{t("farmerResults.preferences.unavailable")}</p></article></div></section>}
+    {step === 0 && <section className="sample-strip"><div><p className="section-kicker">{t("workspace.sampleKicker")}</p><h3>{t("workspace.sampleTitle")}</h3><p>{t("workspace.sampleDescription")}</p><button type="button" className="secondary-button" onClick={() => { setLat("24.7"); setLon("47.3"); setObservationDate("2025-01-01"); setCountry(i18n.language === "ar" ? "السعودية" : "Saudi Arabia"); setCountryCode("SA"); setPlaceQuery(t("workspace.samplePlace")); setLocationKind("manual"); setLocationMessage(t("workspace.sampleSelected")); }}>{t("workspace.loadSample")}</button></div><label>{t("workspace.observationDate")}<input type="date" value={observationDate} onChange={(event) => setObservationDate(event.target.value)} /><small>{t("workspace.dateNote")}</small></label></section>}
+    {step === 1 && <FarmStep crops={crops} selected={selected} onToggleCrop={toggleCrop} soil={soil} onSoilChange={setSoil} priorities={priorities} onPrioritiesChange={setPriorities} />}
     {step === 2 && <section className="analysis-card" aria-live="polite"><div className="analysis-orbit" aria-hidden="true">◌</div><p className="section-kicker">{t("steps.analysisKicker")}</p><h2>{isAnalyzing ? t("analysis.loading") : t("analysis.ready")}</h2><p>{t("analysis.description")}</p><ul className="analysis-stages">{stageKeys.map((name) => <li key={name}><span aria-hidden="true">✓</span>{t(`analysis.${name}`)}</li>)}</ul>{!isAnalyzing && <button className="primary-button" onClick={runAnalysis}>{t("analysis.button")}</button>}<details><summary>{t("analysis.sources")}</summary><p>{t("analysis.sourceNote")}</p></details></section>}
     {step === 3 && <section className="results-panel">{analysisWarnings.length > 0 && <ul className="alert" aria-label={t("farmerResults.warnings")} >{analysisWarnings.map((warning) => <li key={warning}>{warning}</li>)}</ul>}<FarmerResults environment={environment} moisture={moisture} suitability={suitability} scenarios={preferenceComparisons as never[]} priorities={priorities} soil={soil} /><details className="evidence-details"><summary>{t("results.evidence")}</summary><EvidencePanel power={environment} smap={moisture} suitability={suitability} /></details></section>}
-    <nav className="step-actions" aria-label={t("steps.navigation")}><button className="secondary-button" disabled={!step || isAnalyzing} onClick={() => setStep(step - 1)}>{t("actions.back")}</button>{step < 2 && <button className="primary-button" onClick={() => setStep(step + 1)}>{step === 0 ? t("actions.toFarm") : t("actions.toAnalysis")}</button>}{step === 2 && !isAnalyzing && <button className="secondary-button" onClick={() => setStep(3)}>{t("actions.viewResults")}</button>}{step === 3 && <button className="secondary-button" onClick={() => setStep(0)}>{t("actions.startAnother")}</button>}</nav>
+    <nav className="step-actions" aria-label={t("steps.navigation")}><button className="secondary-button" disabled={!step || isAnalyzing} onClick={() => setStep(step - 1)}>{t("actions.back")}</button>{step < 2 && <button className="primary-button" disabled={step === 0 && (!validLocation || !observationDate)} onClick={() => setStep(step + 1)}>{step === 0 ? t("actions.toFarm") : t("actions.toAnalysis")}</button>}{step === 2 && !isAnalyzing && <button className="secondary-button" onClick={() => setStep(3)}>{t("actions.viewResults")}</button>}{step === 3 && <button className="secondary-button" onClick={() => setStep(0)}>{t("actions.startAnother")}</button>}</nav>
   </section></main>;
 }

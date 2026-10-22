@@ -12,6 +12,7 @@ describe("farmer-friendly location selection", () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => [] }));
     Object.defineProperty(navigator, "geolocation", { configurable: true, value: { getCurrentPosition: (success: PositionCallback) => success({ coords: coordinates } as GeolocationPosition) } });
     render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "Start an analysis" }));
     fireEvent.click(screen.getByRole("button", { name: "Use My Current Location" }));
     expect(await screen.findByText("Current location detected")).toBeInTheDocument();
     fireEvent.click(screen.getByText("Advanced location options"));
@@ -23,6 +24,7 @@ describe("farmer-friendly location selection", () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => [] }));
     Object.defineProperty(navigator, "geolocation", { configurable: true, value: { getCurrentPosition: (_success: PositionCallback, failure: PositionErrorCallback) => failure({ code: 1 } as GeolocationPositionError) } });
     render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "Start an analysis" }));
     fireEvent.click(screen.getByRole("button", { name: "Use My Current Location" }));
     expect(await screen.findByText(/Location permission was denied/)).toBeInTheDocument();
   });
@@ -30,6 +32,7 @@ describe("farmer-friendly location selection", () => {
   it("searches a global country/place selector and makes a selected place authoritative", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce({ ok: true, json: async () => [] }).mockResolvedValueOnce({ ok: true, json: async () => [{ display_name: "Alexandria, Egypt", lat: "31.2001", lon: "29.9187", address: { country: "Egypt", country_code: "eg" } }] }));
     render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "Start an analysis" }));
     const country = screen.getByLabelText("Search country");
     fireEvent.change(country, { target: { value: "Egypt" } });
     expect(country).toHaveValue("Egypt");

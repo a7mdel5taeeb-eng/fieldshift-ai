@@ -1,0 +1,21 @@
+{
+  "id": "sorghum",
+  "common_name": "Sorghum",
+  "scientific_name": "Sorghum bicolor",
+  "family": "Poaceae",
+  "climate_requirements": {
+    "temperature_c": { "optimum": { "min": 22, "max": 35 }, "absolute": { "min": 8, "max": 40 }, "source_id": "FAO_ECOCROP_48747" },
+    "annual_precipitation_mm": { "optimum": { "min": 400, "max": 600 }, "absolute": { "min": 300, "max": 700 }, "source_id": "FAO_ECOCROP_48747" }
+  },
+  "soil_requirements": {
+    "ph": { "optimum": { "min": 5.5, "max": 7.5 }, "absolute": { "min": 5, "max": 8 }, "source_id": "FAO_ECOCROP_48747" },
+    "salinity": { "optimum": "low (<4 dS/m)", "absolute": "medium (4-10 dS/m)", "source_id": "FAO_ECOCROP_48747" },
+    "drainage": { "optimum": ["well (dry spells)"], "absolute": ["well (dry spells)", "excessive (dry/moderately dry)"], "source_id": "FAO_ECOCROP_48747" }
+  },
+  "water_requirements": {},
+  "rotation_traits": {},
+  "sources": [{ "source_name": "FAO ECOCROP", "source_type": "EXTERNAL_REFERENCE", "url": "https://ecocrop.apps.fao.org/ecocrop/srv/en/dataSheet?id=48747", "citation": "FAO ECOCROP data sheet: Sorghum bicolor, accessed 2026-10-22" }],
+  "review_status": "REVIEWED_FOR_CROP_LIBRARY_EXPANSION",
+  "record_version": "1.0",
+  "reviewed_at": "2026-10-22"
+}

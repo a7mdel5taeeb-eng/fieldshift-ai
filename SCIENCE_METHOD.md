@@ -42,6 +42,10 @@ The system should answer:
 
 # 2. Core Scientific Principle
 
+## Current local salinity comparison (2026-10-22)
+
+Where a curated FAO ECOCROP crop record explicitly provides salinity classes, a farmer-entered local EC value in `dS/m` is mapped to the source's published classes: low `<4`, medium `4–10`, and high `>10`. A value in the optimum class is shown as `SUITABLE`; a value beyond optimum but within the source's absolute class is `MARGINAL`; a value beyond the absolute class is `LIMITING`. No status is produced when either the local value or comparable sourced class is missing. This is a factor-level reference comparison, not a yield prediction or overall crop recommendation. The user's soil source type remains visible alongside the result, and no satellite moisture value is substituted for local salinity.
+
 The system must separate:
 
 ## A. Scientific evidence

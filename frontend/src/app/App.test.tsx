@@ -13,8 +13,11 @@ afterEach(async () => {
 });
 
 describe("App", () => {
-  it("starts with the farmer-facing location journey", () => {
+  it("opens with an evidence-led introduction and enters the location journey", () => {
     render(<App />);
+    expect(screen.getByRole("heading", { name: /Understand your land/ })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /Illustrated Earth/ })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Start an analysis" }));
 
     expect(screen.getByRole("heading", { name: "FieldShift AI" })).toBeInTheDocument();
     expect(screen.getByText("Smarter crop decisions powered by NASA Earth data.")).toBeInTheDocument();
@@ -23,10 +26,14 @@ describe("App", () => {
     expect(screen.getByLabelText("Farm planning progress")).toHaveTextContent("Farm & Crop");
     expect(screen.getByLabelText("Farm planning progress")).toHaveTextContent("Analysis");
     expect(screen.getByLabelText("Farm planning progress")).toHaveTextContent("Results");
+    expect(screen.getByRole("button", { name: "Continue to farm & crop" })).toBeDisabled();
+    fireEvent.click(screen.getByRole("button", { name: "Use reference case" }));
+    expect(screen.getByRole("button", { name: "Continue to farm & crop" })).toBeEnabled();
   });
 
   it("switches to Arabic, activates RTL, and preserves the selected language", async () => {
     render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "Start an analysis" }));
     fireEvent.change(screen.getByLabelText("Search country"), { target: { value: "Jordan" } });
 
     fireEvent.click(screen.getByRole("button", { name: "العربية" }));
@@ -41,6 +48,7 @@ describe("App", () => {
 
   it("restores English LTR without resetting the workflow", async () => {
     render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "Start an analysis" }));
     fireEvent.click(screen.getByRole("button", { name: "العربية" }));
     await screen.findByText("أين تقع مزرعتك؟");
     fireEvent.click(screen.getByRole("button", { name: "English" }));
@@ -52,8 +60,10 @@ describe("App", () => {
 
   it("shows translated status labels in the Arabic results view", async () => {
     render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "Start an analysis" }));
     fireEvent.click(screen.getByRole("button", { name: "العربية" }));
     await screen.findByText("أين تقع مزرعتك؟");
+    fireEvent.click(screen.getByRole("button", { name: "استخدم الحالة المرجعية" }));
     fireEvent.click(screen.getByRole("button", { name: "المتابعة إلى المزرعة والمحصول" }));
     fireEvent.click(screen.getByRole("button", { name: "المتابعة إلى التحليل" }));
     fireEvent.click(screen.getByRole("button", { name: "عرض النتائج" }));

@@ -57,6 +57,23 @@ def classify_category(factor: str, value: str | None, requirement: dict[str, Any
     return FactorResult(factor=factor, status="LIMITING", evidence=evidence)
 
 
+def classify_salinity(value: float | None, requirement: dict[str, Any] | None, evidence: list[ProvenanceRecord]) -> FactorResult:
+    """Compare a local dS/m value with FAO ECOCROP's published low/medium/high classes."""
+    if value is None or value < 0 or not requirement:
+        return _unknown("salinity", "LOCAL_SOIL_SALINITY_UNAVAILABLE: local salinity in dS/m or a sourced crop requirement is unavailable.", evidence)
+    classes = {"low (<4 dS/m)": 0, "medium (4-10 dS/m)": 1, "high (>10 dS/m)": 2}
+    optimum = classes.get(requirement.get("optimum"))
+    absolute = classes.get(requirement.get("absolute"))
+    if optimum is None or absolute is None:
+        return _unknown("salinity", "A comparable sourced salinity class is unavailable.", evidence)
+    observed = 0 if value < 4 else 1 if value <= 10 else 2
+    if observed <= optimum:
+        return FactorResult(factor="salinity", status="SUITABLE", evidence=evidence)
+    if observed <= absolute:
+        return FactorResult(factor="salinity", status="MARGINAL", evidence=evidence)
+    return FactorResult(factor="salinity", status="LIMITING", evidence=evidence)
+
+
 def evaluate(crop: CropProfile, soil: SoilProfile) -> CropSuitabilityResult:
     evidence = crop.sources
     # Crop calendars are not approved, so arbitrary NASA POWER date ranges are not climate suitability inputs.
@@ -68,7 +85,7 @@ def evaluate(crop: CropProfile, soil: SoilProfile) -> CropSuitabilityResult:
     soil_results = [
         classify_numeric("soil_pH", soil.pH, requirements.get("ph"), evidence),
         classify_category("soil_texture", soil.texture, requirements.get("texture"), evidence),
-        _unknown("salinity", "LOCAL_SOIL_SALINITY_UNAVAILABLE: local salinity units are not represented in the current soil-input schema.", evidence),
+        classify_salinity(soil.salinity, requirements.get("salinity"), evidence),
         classify_category("drainage", soil.drainage, requirements.get("drainage"), evidence),
     ]
     factors = climate + soil_results
