@@ -37,6 +37,12 @@ The frontend supports English (LTR) and Arabic (RTL). Static translations live i
 
 To add a language, add a locale JSON file, register it in `frontend/src/i18n/index.ts`, and add its direction-aware selector label. Keep API enums and official NASA dataset identifiers unchanged; translate only the user-facing label or explanation around them.
 
+### Evidence notebook interface
+
+The introductory field-layer drawing and the workspace's small contour glyph are original, conceptual UI illustrations—not maps, satellite imagery, or measured field boundaries. The three interactive introduction lenses explain where climate, local/SMAP soil context, and sourced crop/rotation information enter the workflow. During analysis, the side note keeps the user's location, date, crop set, and soil provenance visible.
+
+Results are presented as a source ledger, separate factor statuses, and an inspectable rotation path. The default **Different crops** view is only a reversible display filter for generated paths without a repeated crop; **All paths** restores the entire set. Neither view ranks crop suitability, recommends a rotation, or changes the backend's scientific output. Missing inputs and unavailable source states remain visible.
+
 ### Farm location
 
 Farm location can be selected with browser GPS, a searchable global country/place flow, or manual coordinates. Scientific requests continue to use only latitude and longitude. Place search and optional GPS reverse-geocoding use the user-triggered, rate-limited Nominatim service with OpenStreetMap attribution; it is not used for autocomplete and can be changed with `VITE_GEOCODING_BASE_URL`.

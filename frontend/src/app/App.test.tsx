@@ -15,8 +15,10 @@ afterEach(async () => {
 describe("App", () => {
   it("opens with an evidence-led introduction and enters the location journey", () => {
     render(<App />);
-    expect(screen.getByRole("heading", { name: /Understand your land/ })).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: /Illustrated Earth/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /The ground has more to say/ })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /Conceptual field-layer illustration/ })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /What the ground can tell us/ }));
+    expect(screen.getByText(/Your local soil inputs remain separate/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Start an analysis" }));
 
     expect(screen.getByRole("heading", { name: "FieldShift AI" })).toBeInTheDocument();
