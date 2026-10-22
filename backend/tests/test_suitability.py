@@ -24,3 +24,11 @@ def test_multiple_factor_result_preserves_provenance() -> None:
     result = evaluate(CropRepository().get("alfalfa"), SoilProfile(pH=7, texture="light", drainage="well (dry spells)"))
     assert len(result.factor_results) == 6
     assert result.provenance[0].source_name == "FAO ECOCROP"
+
+
+def test_local_salinity_uses_only_documented_fao_classes() -> None:
+    wheat = CropRepository().get("wheat")
+    assert next(item for item in evaluate(wheat, SoilProfile(salinity=3.9)).factor_results if item.factor == "salinity").status == "SUITABLE"
+    assert next(item for item in evaluate(wheat, SoilProfile(salinity=7)).factor_results if item.factor == "salinity").status == "MARGINAL"
+    assert next(item for item in evaluate(wheat, SoilProfile(salinity=11)).factor_results if item.factor == "salinity").status == "LIMITING"
+    assert next(item for item in evaluate(wheat, SoilProfile()).factor_results if item.factor == "salinity").status == "UNKNOWN"

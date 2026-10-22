@@ -1,0 +1,21 @@
+{
+  "id": "lentil",
+  "common_name": "Lentil",
+  "scientific_name": "Lens culinaris",
+  "family": "Fabaceae",
+  "climate_requirements": {
+    "temperature_c": { "optimum": { "min": 15, "max": 29 }, "absolute": { "min": 5, "max": 32 }, "source_id": "FAO_ECOCROP_7209" },
+    "annual_precipitation_mm": { "optimum": { "min": 600, "max": 1000 }, "absolute": { "min": 250, "max": 2500 }, "source_id": "FAO_ECOCROP_7209" }
+  },
+  "soil_requirements": {
+    "ph": { "optimum": { "min": 5.5, "max": 7.5 }, "absolute": { "min": 4.5, "max": 8.2 }, "source_id": "FAO_ECOCROP_7209" },
+    "texture": { "optimum": ["heavy", "medium"], "absolute": ["heavy", "medium", "light"], "source_id": "FAO_ECOCROP_7209" },
+    "drainage": { "optimum": ["well (dry spells)"], "absolute": ["well (dry spells)", "excessive (dry/moderately dry)"], "source_id": "FAO_ECOCROP_7209" }
+  },
+  "water_requirements": {},
+  "rotation_traits": { "legume": { "value": true, "source_id": "FAO_ECOCROP_7209", "rationale": "FAO ECOCROP categorizes lentil as a pulse (grain legume)." } },
+  "sources": [{ "source_name": "FAO ECOCROP", "source_type": "EXTERNAL_REFERENCE", "url": "https://ecocrop.apps.fao.org/ecocrop/srv/en/dataSheet?id=7209", "citation": "FAO ECOCROP data sheet: Lens culinaris, accessed 2026-10-22" }],
+  "review_status": "REVIEWED_FOR_CROP_LIBRARY_EXPANSION",
+  "record_version": "1.0",
+  "reviewed_at": "2026-10-22"
+}

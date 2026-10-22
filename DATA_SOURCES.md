@@ -485,6 +485,17 @@ Use ECOCROP/GAEZ to help build an initial curated crop knowledge base.
 
 Each crop included in the demo must still have its actual values reviewed and cited.
 
+### Curated library expansion (2026-10-22)
+
+Four additional profiles use the exact temperature, annual rainfall, soil pH, and available categorical descriptors shown in these official FAO ECOCROP data sheets:
+
+- [Lentil — *Lens culinaris*, ECOCROP 7209](https://ecocrop.apps.fao.org/ecocrop/srv/en/dataSheet?id=7209)
+- [Maize — *Zea mays*, ECOCROP 2175](https://ecocrop.apps.fao.org/ecocrop/srv/en/dataSheet?id=2175)
+- [Sorghum — *Sorghum bicolor*, ECOCROP 48747](https://ecocrop.apps.fao.org/ecocrop/srv/en/dataSheet?id=48747)
+- [Soybean — *Glycine max*, ECOCROP 1150](https://ecocrop.apps.fao.org/ecocrop/srv/en/dataSheet?id=1150)
+
+Fields absent from an official sheet remain absent from the profile. These are general species descriptors, not local cultivar calendars or farm measurements. No new climate scoring or crop ranking is introduced by this expansion.
+
 ---
 
 ## DS-CROP-002 — FAO CROPWAT / FAO-56

@@ -4,9 +4,9 @@ FieldShift AI is an evidence-based crop-rotation decision-support project for th
 
 FieldShift AI is a globally scalable agricultural decision-support platform. It is not limited to Saudi Arabia: users may evaluate locations in any country where the required NASA environmental data and approved crop/soil reference information are available. Saudi Arabia / Al-Kharj may be used only as a demonstration or validation case.
 
-The documented product direction supports three future modes: **Analyze My Crop**, **Find Suitable Crops** (using only supported, sourced crop profiles), and **Plan Crop Rotation**. The current wheat, barley, chickpea, and alfalfa records are MVP examples, not a global crop limitation. Economic feasibility is a future research layer and will only be shown where verified, location-, date-, currency-, and source-aware data exists; otherwise the product must report `ECONOMIC_DATA_UNAVAILABLE`.
+The documented product direction supports three future modes: **Analyze My Crop**, **Find Suitable Crops** (using only supported, sourced crop profiles), and **Plan Crop Rotation**. The current library contains eight sourced examples: alfalfa, barley, chickpea, lentil, maize, sorghum, soybean, and wheat. The library is not a global suitability guarantee. Economic feasibility is a future research layer and will only be shown where verified, location-, date-, currency-, and source-aware data exists; otherwise the product must report `ECONOMIC_DATA_UNAVAILABLE`.
 
-The current application includes traceable NASA POWER context and an optional NASA SMAP SPL4SMGP Version 8 soil-moisture adapter. It contains no scientific decision logic or crop recommendations.
+The current application includes traceable NASA POWER context, an optional NASA SMAP SPL4SMGP Version 8 soil-moisture adapter, sourced crop profiles, factor-level soil suitability, and descriptive rotation sequences. It does not rank crop success or claim that a sequence is an agronomic recommendation.
 
 ## Prerequisites
 
@@ -37,9 +37,17 @@ The frontend supports English (LTR) and Arabic (RTL). Static translations live i
 
 To add a language, add a locale JSON file, register it in `frontend/src/i18n/index.ts`, and add its direction-aware selector label. Keep API enums and official NASA dataset identifiers unchanged; translate only the user-facing label or explanation around them.
 
+### Evidence notebook interface
+
+The introductory field-layer drawing and the workspace's small contour glyph are original, conceptual UI illustrations—not maps, satellite imagery, or measured field boundaries. The three interactive introduction lenses explain where climate, local/SMAP soil context, and sourced crop/rotation information enter the workflow. During analysis, the side note keeps the user's location, date, crop set, and soil provenance visible.
+
+Results are presented as a source ledger, separate factor statuses, and an inspectable rotation path. The default **Different crops** view is only a reversible display filter for generated paths without a repeated crop; **All paths** restores the entire set. Neither view ranks crop suitability, recommends a rotation, or changes the backend's scientific output. Missing inputs and unavailable source states remain visible.
+
 ### Farm location
 
 Farm location can be selected with browser GPS, a searchable global country/place flow, or manual coordinates. Scientific requests continue to use only latitude and longitude. Place search and optional GPS reverse-geocoding use the user-triggered, rate-limited Nominatim service with OpenStreetMap attribution; it is not used for autocomplete and can be changed with `VITE_GEOCODING_BASE_URL`.
+
+The frontend uses `http://127.0.0.1:8000/api/v1` during local development. For a hosted frontend, serve the backend under the same origin at `/api/v1` or set `VITE_API_BASE_URL` in `frontend/.env.local` or the hosting build environment to a reachable backend URL. If the backend is on a different origin, add the frontend origin to the backend's comma-separated `FRONTEND_ORIGINS` setting. A static frontend deployment alone does not run the FastAPI analysis service.
 
 ## Backend
 
@@ -70,6 +78,8 @@ Use only an uncommitted local `.env` for `NASA_EARTHDATA_TOKEN`; it takes preced
 
 Set `ENABLE_DEMO_SNAPSHOTS=true` only for the documented judge-demo case: latitude `24.7`, longitude `47.3`, and `2025-01-01`. If a live POWER or SMAP request for that case fails, the backend returns the validated normalized sample in `data/samples/demo/nasa_demo_snapshot.json` with `source_status: DEMO_SNAPSHOT`; otherwise live success is `LIVE_DATA` and unavailable data is `UNAVAILABLE`. The snapshot contains five NASA POWER variables and SMAP V8 surface/root-zone moisture, captured from real NASA retrievals without credentials or raw granules. It is explicitly not live data. For an offline demo, start the backend with the flag enabled, use the documented location/date, and inspect the evidence view for provenance and limitations. Disable the flag for ordinary live-data use.
 
+The frontend has a **Use reference case** action and an editable observation date. The interface labels the status of POWER and SMAP separately; for a location outside the reference case, SMAP still requires a configured Earthdata token. A missing token now appears as a specific access message in the results instead of appearing as a missing measurement.
+
 ## Local soil and crop references
 
-Local soil profiles support explicit source types and optional fields only; no suitability evaluation is performed. Curated crop identity/provenance records are in `data/reference/crops/`. Use `GET /api/v1/crops`, `GET /api/v1/crops/{crop_id}`, and `POST /api/v1/soil/profile/validate`.
+Local soil profiles support explicit source types and optional fields. The frontend offers the exact soil texture and drainage categories used by the curated FAO references, plus optional pH and a local salinity EC measurement in `dS/m`. The salinity comparison uses only the source's published classes where available; see `SCIENCE_METHOD.md`. Curated crop records are in `data/reference/crops/`. Use `GET /api/v1/crops`, `GET /api/v1/crops/{crop_id}`, and `POST /api/v1/soil/profile/validate`. Climate suitability remains unknown until a sourced local planting calendar and matching observation period are available; a single historical weather day is context, not a crop suitability assessment.

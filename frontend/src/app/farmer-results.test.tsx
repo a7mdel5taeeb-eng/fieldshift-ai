@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { FarmerResults } from "./farmer-results";
 import { EvidencePanel } from "./evidence";
@@ -25,5 +25,32 @@ describe("farmer decision-value presentation", () => {
     expect(screen.getByText((_, element) => Boolean(element?.classList.contains("source-status") && element.textContent === "NASA POWER: Demo snapshot"))).toBeInTheDocument();
     expect(screen.getByText("Scientific Details")).toBeInTheDocument();
     expect(screen.queryByText(/\{\s*"data"/)).not.toBeInTheDocument();
+  });
+
+  it("lets farmers inspect a rotation path without ranking it", () => {
+    const scenarios = [
+      { scenario_id: "one", scientific_profile: { crops: ["wheat", "lentil", "barley"], diversity_descriptors: { distinct_crop_count: 3, distinct_family_count: 2 }, legume_presence: true, repeated_crop_flags: [], repeated_family_flags: [] }, foregrounded_dimensions: [] },
+      { scenario_id: "two", scientific_profile: { crops: ["maize", "soybean", "sorghum"], diversity_descriptors: { distinct_crop_count: 3, distinct_family_count: 2 }, legume_presence: true, repeated_crop_flags: [], repeated_family_flags: [] }, foregrounded_dimensions: [] },
+    ];
+    render(<FarmerResults environment={null} moisture={null} suitability={suitability} scenarios={scenarios} priorities={{ water_conservation: 0, soil_health: 0, resilience: 0, productivity: 0 }} soil={{ source_type: "unknown", texture: "", pH: "", drainage: "" }} />);
+    const first = screen.getByRole("button", { name: /Wheat → Lentil → Barley/ });
+    const second = screen.getByRole("button", { name: /Maize → Soybean → Sorghum/ });
+    expect(first).toHaveAttribute("aria-pressed", "true");
+    fireEvent.click(second);
+    expect(second).toHaveAttribute("aria-pressed", "true");
+    expect(first).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByText("OPEN PATH")).toBeInTheDocument();
+    expect(screen.queryByText(/best|winner|optimal/i)).not.toBeInTheDocument();
+  });
+
+  it("makes the descriptive variety filter reversible", () => {
+    const scenarios = [
+      { scenario_id: "repeated", scientific_profile: { crops: ["wheat", "wheat", "wheat"], diversity_descriptors: { distinct_crop_count: 1, distinct_family_count: 1 }, legume_presence: false, repeated_crop_flags: ["wheat"], repeated_family_flags: ["Poaceae"] }, foregrounded_dimensions: [] },
+      { scenario_id: "varied", scientific_profile: { crops: ["wheat", "lentil", "barley"], diversity_descriptors: { distinct_crop_count: 3, distinct_family_count: 2 }, legume_presence: true, repeated_crop_flags: [], repeated_family_flags: [] }, foregrounded_dimensions: [] },
+    ];
+    render(<FarmerResults environment={null} moisture={null} suitability={suitability} scenarios={scenarios} priorities={{ water_conservation: 0, soil_health: 0, resilience: 0, productivity: 0 }} soil={{ source_type: "unknown", texture: "", pH: "", drainage: "" }} />);
+    expect(screen.queryByRole("button", { name: /Wheat → Wheat → Wheat/ })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /All paths/ }));
+    expect(screen.getByRole("button", { name: /Wheat → Wheat → Wheat/ })).toBeInTheDocument();
   });
 });

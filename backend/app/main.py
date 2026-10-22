@@ -1,3 +1,4 @@
+import os
 from datetime import date
 
 from fastapi import FastAPI, HTTPException
@@ -48,7 +49,13 @@ crop_repository = CropRepository()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
+        *(origin.strip() for origin in os.getenv("FRONTEND_ORIGINS", "").split(",") if origin.strip()),
+    ],
     allow_credentials=False,
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type"],

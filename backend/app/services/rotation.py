@@ -52,5 +52,5 @@ def evaluate(scenario: RotationScenario, crops: list[CropProfile]) -> RotationAs
     if repeated_families:
         risks.append("Repeated crop family: source guidance advises changing plant family in rotation.")
         evidence.append(FAMILY_SOURCE)
-    benefits = ["Chickpea is present; this is a sourced legume descriptor, not a quantified benefit."] if legumes else []
+    benefits = ["A selected crop is a sourced legume; this is a descriptor, not a quantified benefit."] if legumes else []
     return RotationAssessment(scenario_id=scenario.id, periods=scenario.periods, crops=scenario.crop_ids, crop_families=families, diversity_descriptors={"distinct_crop_count": len(set(scenario.crop_ids)), "distinct_family_count": len({family for family in families if family})}, legume_presence=legumes, repeated_crop_flags=repeated_crops, repeated_family_flags=repeated_families, documented_benefits=benefits, documented_risks=risks, unknowns=["No crop-pair compatibility or sequence restriction is evaluated."], evidence=evidence, provenance=evidence, limitations=["Descriptors and sourced warnings are not a rotation recommendation or score."])

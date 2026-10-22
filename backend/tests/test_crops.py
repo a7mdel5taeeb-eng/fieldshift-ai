@@ -9,6 +9,6 @@ def test_soil_source_types() -> None: assert SoilProfile(source_type="farmer_pro
 def test_invalid_soil_source() -> None:
     with pytest.raises(Exception): SoilProfile(source_type="bad")
 def test_crop_endpoints() -> None:
-    assert len(client.get("/api/v1/crops").json()) == 4
+    assert len(client.get("/api/v1/crops").json()) == 8
     assert client.get("/api/v1/crops/wheat").json()["sources"]
     assert client.get("/api/v1/crops/nope").status_code == 404
